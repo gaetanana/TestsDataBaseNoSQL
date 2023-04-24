@@ -15,20 +15,6 @@ public class READMongoDB {
         readCollection("testCollection");
     }
 
-    /**
-     * Cette méthode me permet de savoir si une collection existe
-     * @param collectionName
-     * @return
-     */
-    public static boolean collectionExists(String collectionName) {
-        MongoIterable<String> collectionNames = instanceDeConnection.getDatabase().listCollectionNames();
-        for (String name : collectionNames) {
-            if (name.equals(collectionName)) {
-                return true;
-            }
-        }
-        return false;
-    }
 
     /**
      * Cette méthode permet de lire une collection avec son nom.
@@ -51,4 +37,24 @@ public class READMongoDB {
         }
         System.err.println("Collection " + collectionName + " does not exist");
     }
+
+
+
+
+    /**
+     * Cette méthode me permet de savoir si une collection existe
+     * @param collectionName
+     * @return
+     */
+    public static boolean collectionExists(String collectionName) {
+        MongoIterable<String> collectionNames = instanceDeConnection.getDatabase().listCollectionNames();
+        for (String name : collectionNames) {
+            if (name.equals(collectionName)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
 }

@@ -15,6 +15,9 @@ import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
+import java.time.Instant;
+import java.time.Duration;
+
 import static ConnectionBD.ConnectionMongoDB.getInstance;
 
 
@@ -43,7 +46,7 @@ public class CREATEMongoDB {
         }
         Path path = Paths.get(url.toURI());
         String folderPath = path.toString();
-        creationPlusieursDocuments("testCollection",folderPath);
+        creationPlusieursDocuments("testCollection", folderPath);
 
     }
 
@@ -91,7 +94,12 @@ public class CREATEMongoDB {
                         .append("metadata", document)
                 );
             }
+
+
+
             System.out.println("Document created successfully");
+
+
         } catch (Exception e) {
             System.err.println("Error creating document: " + e.getMessage());
         }
@@ -103,6 +111,8 @@ public class CREATEMongoDB {
      * il les convertit en JSON et les insère dans la collection avec l'heure actuelle ainsie que la date.
      */
     public static void creationPlusieursDocuments(String collectionName, String chemingDuDossier) {
+        // Enregistre l'heure de début
+        Instant startTime = Instant.now();
         //Récupère l'heure actuelle
         LocalDateTime now = LocalDateTime.now();
         //Récupère la date actuelle
@@ -113,7 +123,7 @@ public class CREATEMongoDB {
                 System.err.println("Collection " + collectionName + " does not exist");
                 return;
             } else {
-                System.out.println("Collection " + collectionName + " exists");
+                //System.out.println("Collection " + collectionName + " exists");
 
                 // Récupérer les fichiers XML du dossier
                 File folder = new File(chemingDuDossier);
@@ -121,12 +131,10 @@ public class CREATEMongoDB {
 
                 //Affiche tous les fichiers récupérés
                 int compteur = 0;
-                for (File file:listOfFiles) {
-                    System.out.println(file.getName());
+                for (File file : listOfFiles) {
+                    //System.out.println(file.getName());
                     compteur++;
                 }
-                System.out.println("compteur de fichier : " + compteur);
-
                 // Vérifier si des fichiers XML ont été trouvés
                 if (listOfFiles == null || listOfFiles.length == 0) {
                     System.err.println("No XML files found in the folder");
@@ -152,15 +160,18 @@ public class CREATEMongoDB {
                             .append("metadata", document)
                     );
                 }
-                System.out.println("Compteur 2 : " + compteur2);
+                // Enregistre l'heure de fin
+                Instant endTime = Instant.now();
+                // Calcule la durée totale
+                Duration duration = Duration.between(startTime, endTime);
 
+                System.out.println("Nombre de fichier: " + compteur);
+                System.out.println("Durée totale : " + duration.toMillis() + " secondes");
                 System.out.println("Documents created successfully");
-
             }
         } catch (Exception e) {
             System.out.println("Error creating document: " + e.getMessage());
         }
-
     }
 
 

@@ -94,9 +94,6 @@ public class CREATEMongoDB {
                         .append("metadata", document)
                 );
             }
-
-
-
             System.out.println("Document created successfully");
 
 

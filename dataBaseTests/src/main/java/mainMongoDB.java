@@ -46,12 +46,20 @@ public class mainMongoDB {
                         System.out.println("La collection n'existe pas, veuillez entrer un nom de collection valide : ");
                         nomCollection = sc.next();
                     }
-                    System.out.println("Veuillez entrer le chemin du fichier JSON : ");
+                    System.out.println("Veuillez entrer le chemin absolue du fichier JSON : ");
                     String cheminFichierJSON = sc.next();
                     CREATEMongoDB.createOneDocument(nomCollection, cheminFichierJSON);
                 } else if (choixCreate == 3) {
-
-
+                    System.out.println("Vous avez choisi de créer tous les documents d'un dossier");
+                    System.out.println("Veuillez entrer le nom de la collection : ");
+                    String nomCollection = sc.next();
+                    while (READMongoDB.collectionExists(nomCollection) == false) {
+                        System.out.println("La collection n'existe pas, veuillez entrer un nom de collection valide : ");
+                        nomCollection = sc.next();
+                    }
+                    System.out.println("Veuillez entrer le chemin absolue du dossier : ");
+                    String cheminDossier = sc.next();
+                    CREATEMongoDB.creationPlusieursDocuments(nomCollection, cheminDossier);
                 } else if (choixCreate == 4) {
                     System.out.println("Vous avez choisi de quitter le menu Create");
                     continue;

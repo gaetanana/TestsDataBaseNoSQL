@@ -52,25 +52,16 @@ public class READMongoDB {
 
 
     /**
-     * Méthode qui renvoie les documents dans lesquelles il y a un humain et qu'il a l'attribut NoBag = 1.00
+     * Méthode qui renvoie les documents dans lequelle il y a un attribut NoBag = 1.00
      */
     public static void getHuman(String collectionName) {
-        MongoIterable<String> collectionsNames = instanceDeConnection.getDatabase().listCollectionNames();
-        //Je vérifie si la collection existe
-        for (String name : collectionsNames) {
+        MongoCollection<Document> collection = instanceDeConnection.getDatabase().getCollection(collectionName);
+        Document query = Document.parse("{\"metadata.MetadataStream.VideoAnalytics.Frame.Object.Appearance.Extension.HumanBody.Belonging.Bag.NoBag\": 1.00}");
+        System.out.println(query.toJson());
+        FindIterable<Document> documents = collection.find(query);
 
-            if (name.equals(collectionName)) {
-                MongoCollection<Document> collection = instanceDeConnection.getDatabase().getCollection(collectionName);
-                //J'affiche tous les documents de la collection
-                for (Document document : collection.find()) {
-
-                    if (document.get("NoBag").equals(1.00)) {
-                        System.out.println(document);
-                    }
-                }
-                return;
-            }
-
+        for (Document document : documents) {
+            System.out.println(document.toJson());
         }
     }
 

@@ -16,13 +16,14 @@
     </properties>
 
     <dependencies>
-        <!-- Dépendance du pilote MongoDB -->
         <dependency>
             <groupId>org.mongodb</groupId>
             <artifactId>mongodb-driver-legacy</artifactId>
             <version>3.12.10</version>
             <scope>compile</scope>
         </dependency>
+
+
 
         <dependency>
             <groupId>org.json</groupId>
@@ -35,6 +36,13 @@
             <artifactId>jedis</artifactId>
             <version>3.7.0</version>
         </dependency>
+
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.2.3</version>
+        </dependency>
+
 
 
     </dependencies>

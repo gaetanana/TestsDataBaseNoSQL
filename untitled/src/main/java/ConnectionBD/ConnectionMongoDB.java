@@ -1,8 +1,6 @@
 package ConnectionBD;
 
-
 import com.mongodb.ConnectionString;
-import com.mongodb.MongoClientURI;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoDatabase;
@@ -10,7 +8,7 @@ import com.mongodb.client.MongoDatabase;
 import java.util.Objects;
 
 /**
- * Cette classe permet de se connecter à la base de données MongoDB
+ * Cette classe permet de se connecter à la base de données actiaDataBase MongoDB
  * Elle est un singleton ce qui permet d'avoir une seule instance de la classe.
  */
 public class ConnectionMongoDB {
@@ -19,14 +17,13 @@ public class ConnectionMongoDB {
     private MongoClient mongoClient;
     private MongoDatabase mongoDatabase;
 
-    private static final String CONNECTION_STRING = "mongodb://root:examplepassword@sample.host:27017/database?retryWrites=true&w=majority";
-
     private ConnectionMongoDB() {
         try {
-            ConnectionString connectionString = new ConnectionString(CONNECTION_STRING);
+            ConnectionString connectionString = new ConnectionString("mongodb://root:examplepassword@localhost:27017/actiaDataBase?retryWrites=true&w=majority&authSource=admin");
             mongoClient = MongoClients.create(connectionString);
+            mongoDatabase = mongoClient.getDatabase("actiaDataBase");
 
-            mongoDatabase = mongoClient.getDatabase(Objects.requireNonNull(connectionString.getDatabase()));
+            System.out.println("Connected to the database successfully : " + mongoDatabase.getName());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -46,5 +43,4 @@ public class ConnectionMongoDB {
     public MongoDatabase getDatabase() {
         return mongoDatabase;
     }
-
 }

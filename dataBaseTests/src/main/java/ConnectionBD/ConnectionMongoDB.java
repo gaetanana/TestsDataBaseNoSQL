@@ -23,7 +23,7 @@ public class ConnectionMongoDB {
             mongoClient = MongoClients.create(connectionString);
             mongoDatabase = mongoClient.getDatabase("actiaDataBase");
 
-            System.out.println("Connected to the database successfully : " + mongoDatabase.getName());
+            //System.out.println("Connected to the database successfully : " + mongoDatabase.getName());
         } catch (Exception e) {
             e.printStackTrace();
         }

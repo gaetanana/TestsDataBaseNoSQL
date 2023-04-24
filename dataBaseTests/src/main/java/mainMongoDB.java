@@ -5,7 +5,7 @@ import MongoDBCRUD.*;
 public class mainMongoDB {
     public static void main(String[] args) {
 
-        while (true){
+        while (true) {
             System.out.println("Bienvenue dans le programme de test de la base de données MongoDB\n");
             System.out.println("Veuillez choisir une option :\n");
 
@@ -28,8 +28,8 @@ public class mainMongoDB {
                 System.out.println("4 - Quitter le menu Create");
 
                 int choixCreate = sc.nextInt();
-
-                if(choixCreate == 1) {
+                //CREATE
+                if (choixCreate == 1) {
                     System.out.println("Vous avez choisi de créer une collection");
                     System.out.println("Veuillez entrer le nom de la collection : ");
                     String nomCollection = sc.next();
@@ -46,7 +46,6 @@ public class mainMongoDB {
                         System.out.println("La collection n'existe pas, veuillez entrer un nom de collection valide : ");
                         nomCollection = sc.next();
                     }
-
                     System.out.println("Veuillez entrer le chemin du fichier JSON : ");
                     String cheminFichierJSON = sc.next();
                     CREATEMongoDB.createOneDocument(nomCollection, cheminFichierJSON);
@@ -56,15 +55,13 @@ public class mainMongoDB {
                 } else if (choixCreate == 4) {
                     System.out.println("Vous avez choisi de quitter le menu Create");
                     continue;
-                }
-                else {
+                } else {
                     System.out.println("Veuillez entrer un nombre entre 1 et 3");
                 }
-
+                //READ
             } else if (choix == 2) {
 
             } else if (choix == 3) {
-
 
             } else if (choix == 4) {
 

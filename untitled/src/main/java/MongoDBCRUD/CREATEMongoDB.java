@@ -25,11 +25,12 @@ public class CREATEMongoDB {
         File file = new File(Objects.requireNonNull(classLoader.getResource("FichersJSON/MetadataJSON.json")).getFile());
         String path = file.getAbsolutePath();
         //Créer un document dans la collection testCollection
-        createDocument("testCollection",path);
+        createOneDocument("testCollection", path);
     }
 
     /**
      * Cette méthode permet de créer une collection dans la base de données
+     *
      * @param collectionName
      */
     public static void createCollection(String collectionName) {
@@ -42,34 +43,34 @@ public class CREATEMongoDB {
     }
 
     /**
-     * Cette méthode permet de créer un document dans une collection.
+     * Cette méthode permet de créer UN document dans une collection.
+     *
      * @param collectionName le nom de la collection
-     * @param filePath le chemin du fichier JSON
+     * @param filePath       le chemin du fichier JSON.
      */
-    public static void createDocument(String collectionName,String filePath) {
+    public static void createOneDocument(String collectionName, String filePath) {
         //Récupère l'heure actuelle
         LocalDateTime now = LocalDateTime.now();
         //Récupère la date actuelle
-        String date = now.toString().substring(0,10);
+        String date = now.toString().substring(0, 10);
 
         try {
             MongoCollection<Document> collection = instanceDeConnection.getDatabase().getCollection(collectionName);
-            if(Objects.isNull(collection)) {
+            if (Objects.isNull(collection)) {
                 System.err.println("Collection " + collectionName + " does not exist");
                 return;
-            }
-            else{
+            } else {
                 System.out.println("Collection " + collectionName + " exists");
                 // Read the file content and create a JSON object from it
                 String fileContent = new String(Files.readAllBytes(Paths.get(filePath)));
                 JSONObject jsonObject = new JSONObject(fileContent);
-
                 // Convert the JSON object to a BSON Document
                 Document document = Document.parse(jsonObject.toString());
-
-                // Insert the document into the collection
-                instanceDeConnection.getDatabase().getCollection(collectionName).insertOne(document);
-
+                // Insert the document into the collection with the current date
+                instanceDeConnection.getDatabase().getCollection(collectionName).insertOne(new Document("date", date)
+                                .append("hour", now.toString().substring(11, 19))
+                                .append("metadata", document)
+                );
             }
             System.out.println("Document created successfully");
         } catch (Exception e) {
@@ -77,6 +78,11 @@ public class CREATEMongoDB {
         }
 
     }
+
+    /**
+     * Cette méthode permet de prendre tous les fichiers XML présents dans un dossiers
+     * il les convertit en JSON et les insère dans la collection avec l'heure actuelle ainsie que la date.
+     */
 
 
 }

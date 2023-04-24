@@ -16,6 +16,7 @@ public class DELETEMongoDB {
      */
     public static void deleteCollection(String collectionName) {
         instanceDeConnection.getDatabase().getCollection(collectionName).drop();
+        System.out.println("Collection " + collectionName + " deleted successfully");
     }
 
 

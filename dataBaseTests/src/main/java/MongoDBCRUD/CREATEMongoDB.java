@@ -120,9 +120,12 @@ public class CREATEMongoDB {
                 File[] listOfFiles = folder.listFiles((dir, name) -> name.toLowerCase().endsWith(".xml"));
 
                 //Affiche tous les fichiers récupérés
-                /*for (File file:listOfFiles) {
+                int compteur = 0;
+                for (File file:listOfFiles) {
                     System.out.println(file.getName());
-                }*/
+                    compteur++;
+                }
+                System.out.println("compteur de fichier : " + compteur);
 
                 // Vérifier si des fichiers XML ont été trouvés
                 if (listOfFiles == null || listOfFiles.length == 0) {
@@ -130,15 +133,15 @@ public class CREATEMongoDB {
                     return;
                 }
 
+                int compteur2 = 0;
                 // Parcourir chaque fichier XML
                 for (File file : listOfFiles) {
+                    compteur2++;
                     // Lire le contenu du fichier
                     String xmlContent = new String(Files.readAllBytes(Paths.get(file.getAbsolutePath())));
 
                     // Convertir le contenu XML en JSON
                     JSONObject jsonObject = XML.toJSONObject(xmlContent);
-
-
 
                     // Convertir l'objet JSON en un document BSON
                     Document document = Document.parse(jsonObject.toString());
@@ -149,6 +152,7 @@ public class CREATEMongoDB {
                             .append("metadata", document)
                     );
                 }
+                System.out.println("Compteur 2 : " + compteur2);
 
                 System.out.println("Documents created successfully");
 

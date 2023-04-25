@@ -7,26 +7,33 @@ public class mainMongoDB {
 
         while (true) {
             System.out.println("\n========================================================");
-            System.out.println("== Programme de test de la base de données MongoDB    ==");
+            System.out.println("|| Programme de test de la base de données MongoDB    ||");
             System.out.println("========================================================\n");
-            System.out.println("Veuillez choisir une option :\n");
-
-            System.out.println("1 - Create");
-            System.out.println("2 - Read");
-            System.out.println("3 - Update");
-            System.out.println("4 - Delete");
-            System.out.println("5 - Quitter le programme");
-
-            System.out.println("\nVotre choix : ");
+            System.out.println("============== Veuillez choisir une option : ===========");
+            System.out.println("||                                                    ||");
+            System.out.println("|| 1 - Create                                         ||");
+            System.out.println("|| 2 - Read                                           ||");
+            System.out.println("|| 3 - Update                                         ||");
+            System.out.println("|| 4 - Delete                                         ||");
+            System.out.println("|| 5 - Quitter le programme                           ||");
+            System.out.println("||                                                    ||");
+            System.out.println("========================================================");
+            System.out.print("\nVotre choix : ");
             Scanner sc = new Scanner(System.in);
             int choix = sc.nextInt();
             if (choix == 1) {
-                System.out.println("Vous êtes dans le menu Create");
-                System.out.println("Veuillez choisir une option :\n");
-                System.out.println("1 - Créer une collection");
-                System.out.println("2 - Créer un document");
-                System.out.println("3 - Créer tous les documents d'un dossier");
-                System.out.println("4 - Quitter le menu Create");
+                System.out.println("\n========================================================");
+                System.out.println("||                  Menu Create                       ||");
+                System.out.println("========================================================");
+                System.out.println("========= Veuillez choisir une option : ===============");
+                System.out.println("||                                                    ||");
+                System.out.println("|| 1 - Créer une collection                           ||");
+                System.out.println("|| 2 - Créer un document                              ||");
+                System.out.println("|| 3 - Créer tous les documents d'un dossier          ||");
+                System.out.println("|| 4 - Quitter le menu Create                         ||");
+                System.out.println("||                                                    ||");
+                System.out.println("========================================================");
+                System.out.print("\nVotre choix : ");
                 int choixCreate = sc.nextInt();
                 //CREATE
                 if (choixCreate == 1) {
@@ -68,12 +75,19 @@ public class mainMongoDB {
                 }
                 //READ
             } else if (choix == 2) {
-                System.out.println("Vous êtes dans le menu Read");
-                System.out.println("Veuillez choisir une option :\n");
-                System.out.println("1 - Lire une collection");
-                System.out.println("2 - Lire les documents qui possèdent un Type Human");
-                System.out.println("3 - Lire un documents qui possèdent un Type Human avec une probabilité supérieur à 0.5");
-                System.out.println("4 - Quitter le menu Read");
+                System.out.println("\n========================================================");
+                System.out.println("||                  Menu Read                         ||");
+                System.out.println("========================================================");
+                System.out.println("========= Veuillez choisir une option : ===============");
+                System.out.println("||                                                    ||");
+                System.out.println("|| 1 - Lire une collection                            ||");
+                System.out.println("|| 2 - Lire les documents qui possèdent un Type Human ||");
+                System.out.println("|| 3 - Lire un documents qui possèdent un Type Human  ||");
+                System.out.println("||    avec une probabilité supérieur à 0.5            ||");
+                System.out.println("|| 4 - Quitter le menu Read                           ||");
+                System.out.println("||                                                    ||");
+                System.out.println("========================================================");
+                System.out.print("\nVotre choix : ");
 
                 int choixRead = sc.nextInt();
 
@@ -113,16 +127,33 @@ public class mainMongoDB {
 
 
             } else if (choix == 3) {
-                System.out.println("Vous êtes dans le menu Update");
-                System.out.println("Pas encore disponible");
+                System.out.println("\n========================================================");
+                System.out.println("==                  Menu Update                       ==");
+                System.out.println("========================================================\n");
+                System.out.println("========= Veuillez choisir une option : ===============");
+                System.out.println("||                                                    ||");
+                System.out.println("|| 1 - Modifier un document                           ||");
+                System.out.println("|| 2 - Modifier         ||");
+                System.out.println("|| 3 - Supprimer tous les documents d'une collection  ||");
+                System.out.println("|| 4 - Quitter le menu Delete                         ||");
+                System.out.println("||                                                    ||");
+                System.out.println("========================================================");
+
+
+
 
             } else if (choix == 4) {
-                System.out.println("Vous êtes dans le menu Delete");
-                System.out.println("Veuillez choisir une option :\n");
-                System.out.println("1 - Supprimer une collection");
-                System.out.println("2 - Supprimer un document d'une collection");
-                System.out.println("3 - Supprimer tous les documents d'une collection");
-                System.out.println("4 - Quitter le menu Delete");
+                System.out.println("\n========================================================");
+                System.out.println("||                  Menu Delete                       ||");
+                System.out.println("========================================================");
+                System.out.println("========= Veuillez choisir une option : ===============");
+                System.out.println("||                                                    ||");
+                System.out.println("|| 1 - Supprimer une collection                       ||");
+                System.out.println("|| 2 - Supprimer un document d'une collection         ||");
+                System.out.println("|| 3 - Supprimer tous les documents d'une collection  ||");
+                System.out.println("|| 4 - Quitter le menu Delete                         ||");
+                System.out.println("||                                                    ||");
+                System.out.println("========================================================");
                 int choixDelete = sc.nextInt();
 
                 if (choixDelete == 1) {
@@ -133,6 +164,7 @@ public class mainMongoDB {
                         System.out.println("La collection n'existe pas, veuillez entrer un nom de collection valide : ");
                         nomCollection = sc.next();
                     }
+
                     DELETEMongoDB.deleteCollection(nomCollection);
                 } else if (choixDelete == 2) {
                     System.out.println("Vous avez choisi de supprimer un document d'une collection");

@@ -68,7 +68,7 @@ public class CREATEMongoDB {
      * Cette méthode permet de créer UN document dans une collection.
      *
      * @param collectionName le nom de la collection
-     * @param filePath       le chemin du fichier JSON.
+     * @param filePath       le chemin du fichier XML.
      */
     public static void createOneDocument(String collectionName, String filePath) {
         //Récupère l'heure actuelle
@@ -83,9 +83,9 @@ public class CREATEMongoDB {
                 return;
             } else {
                 System.out.println("Collection " + collectionName + " exists");
-                // Read the file content and create a JSON object from it
+                // Read the file content and create a JSON object from XML content
                 String fileContent = new String(Files.readAllBytes(Paths.get(filePath)));
-                JSONObject jsonObject = new JSONObject(fileContent);
+                JSONObject jsonObject = XML.toJSONObject(fileContent);
                 // Convert the JSON object to a BSON Document
                 Document document = Document.parse(jsonObject.toString());
                 // Insert the document into the collection with the current date
@@ -95,7 +95,6 @@ public class CREATEMongoDB {
                 );
             }
             System.out.println("Document created successfully");
-
 
         } catch (Exception e) {
             System.err.println("Error creating document: " + e.getMessage());

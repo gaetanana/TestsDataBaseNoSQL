@@ -16,7 +16,7 @@ public class READRedis {
     public static void main(String[] args) {
         //readOneKeyValue("Onvif_Metadata_C1000_2023-04-21_16-44-55.650.xml");
         //readAllKey();
-        readAllKeyWithHuman();
+        //readAllKeyWithHuman();
     }
 
     /**
@@ -147,8 +147,6 @@ public class READRedis {
             System.out.println("Nombre de clés avec le contenu 'Human' : " + compteurCle);
         }
     }
-
-
 
     /**
      * Cette fonction permet de savoir si une clé existe dans la base de données Redis

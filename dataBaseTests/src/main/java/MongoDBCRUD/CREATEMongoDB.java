@@ -57,6 +57,12 @@ public class CREATEMongoDB {
      */
     public static void createCollection(String collectionName) {
         try {
+            //Vérifie si la collection existe
+            boolean exist = READMongoDB.collectionExists(collectionName);
+            if (exist) {
+                System.err.println("Collection " + collectionName + " already exists");
+                return;
+            }
             instanceDeConnection.getDatabase().createCollection(collectionName);
             System.out.println("Collection " + collectionName + " created successfully");
         } catch (Exception e) {

@@ -7,6 +7,7 @@ import redis.clients.jedis.ScanParams;
 import redis.clients.jedis.ScanResult;
 
 import java.io.IOException;
+import java.util.List;
 
 public class READRedis {
 
@@ -55,7 +56,7 @@ public class READRedis {
                 cursor = scanResult.getCursor();
             } while (!cursor.equals(ScanParams.SCAN_POINTER_START));
         } finally {
-            System.out.println("Nombre de clés dans la  : " + compteurCle);
+            System.out.println("Nombre de clés dans la base de données  : " + compteurCle);
             // Ferme la connexion à Redis
             if (instanceDeConnection.getConnection() != null) {
                 instanceDeConnection.getConnection().close();
@@ -64,10 +65,7 @@ public class READRedis {
     }
 
     /**
-     * Cette fonction me permet de me retourner les clé dont les valeurs possèdent dans leur valeur un fichier Json qui à le content : Human
-     */
-    /**
-     * Cette fonction me permet de me retourner les clé dont les valeurs possèdent dans leur valeur un fichier Json qui à le content : Human
+     * Cette fonction permet de retrouver toutes les clés dans Redis qui contiennent un objet de type "Human"
      */
     public static void readAllKeyWithHuman() {
         int compteurCle = 0;
@@ -87,9 +85,14 @@ public class READRedis {
                     String value = jedis.get(key);
                     try {
                         JsonNode jsonNode = objectMapper.readTree(value);
-                        if (jsonNode != null && jsonNode.get("content") != null && jsonNode.get("content").asText().equals("Human")) {
-                            compteurCle++;
-                            System.out.println(key);
+                        List<JsonNode> parents = jsonNode.findParents("content");
+                        for (JsonNode parent : parents) {
+                            JsonNode contentNode = parent.get("content");
+                            if (contentNode != null && contentNode.asText().equals("Human")) {
+                                compteurCle++;
+                                System.out.println(key);
+                                break;
+                            }
                         }
                     } catch (IOException e) {
                         System.err.println("Erreur lors de la conversion en JSON : " + e.getMessage());
@@ -101,6 +104,50 @@ public class READRedis {
             System.out.println("Nombre de clés avec le contenu 'Human' : " + compteurCle);
         }
     }
+
+    /**
+     * Cette fonction permet de retrouver toutes les clés dans Redis qui contiennent un objet de type "Human"
+     * et un Likelihood supérieur à 0.5
+     */
+    public static void getHumanWithProbability() {
+        int compteurCle = 0;
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        try (Jedis jedis = instanceDeConnection.getConnection()) {
+            // Récupère toutes les clés
+            ScanParams scanParams = new ScanParams();
+            scanParams.match("*");
+            scanParams.count(1000);
+            String cursor = ScanParams.SCAN_POINTER_START;
+            ScanResult<String> scanResult;
+
+            do {
+                scanResult = jedis.scan(cursor, scanParams);
+                for (String key : scanResult.getResult()) {
+                    String value = jedis.get(key);
+                    try {
+                        JsonNode jsonNode = objectMapper.readTree(value);
+                        List<JsonNode> parents = jsonNode.findParents("content");
+                        for (JsonNode parent : parents) {
+                            JsonNode contentNode = parent.get("content");
+                            JsonNode likelihoodNode = parent.get("Likelihood");
+                            if (contentNode != null && contentNode.asText().equals("Human") && likelihoodNode != null && likelihoodNode.asDouble() > 0.5) {
+                                compteurCle++;
+                                System.out.println(key);
+                                break;
+                            }
+                        }
+                    } catch (IOException e) {
+                        System.err.println("Erreur lors de la conversion en JSON : " + e.getMessage());
+                    }
+                }
+                cursor = scanResult.getCursor();
+            } while (!cursor.equals(ScanParams.SCAN_POINTER_START));
+        } finally {
+            System.out.println("Nombre de clés avec le contenu 'Human' : " + compteurCle);
+        }
+    }
+
 
 
     /**

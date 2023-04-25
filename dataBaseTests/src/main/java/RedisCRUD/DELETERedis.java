@@ -55,6 +55,7 @@ public class DELETERedis {
      * Cette fonction permet de supprimer les 50 dernières clés ajoutées dans Redis
      */
     public static void delete50LastKey() {
+
         int numberOfKeysToDelete = 50;
 
         try (Jedis jedis = ConnectionRedis.getInstance().getConnection()) {
@@ -68,6 +69,7 @@ public class DELETERedis {
             }
 
             System.out.println("Les 50 dernières clés ont été supprimées");
+            System.out.println("Maintenant il reste " + jedis.dbSize() + " clés dans la base de données");
         } catch (Exception e) {
             System.err.println("Erreur lors de la suppression des clés : " + e.getMessage());
         }

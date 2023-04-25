@@ -53,7 +53,9 @@ public class mainRedis {
                 System.out.println("Veuillez choisir une option :\n");
                 System.out.println("1 - Lire la valeur d'une clé");
                 System.out.println("2 - Lire toutes les clés présentes dans la base de données");
-                System.out.println("3 - Quitter le menu Read");
+                System.out.println("3 - Lire toutes les clés qui a dans les valeurs un humain");
+                System.out.println("4 - Lire toutes les clés qui a dans les valeurs un humain avec une probabilité de survie supérieure à 0.5");
+                System.out.println("5 - Quitter le menu Read");
 
                 System.out.println("\nVotre choix : ");
 
@@ -71,6 +73,12 @@ public class mainRedis {
                     System.out.println("Vous avez choisi de lire toutes les clés présentes dans la base de données");
                     READRedis.readAllKey();
                 } else if (choixRead == 3) {
+                    System.out.println("Vous avez choisi de lire toutes les clés qui a dans les valeurs un humain");
+                    READRedis.readAllKeyWithHuman();
+                } else if (choixRead == 4) {
+                    System.out.println("Vous avez choisi de lire toutes les clés qui a dans les valeurs un humain avec une probabilité de survie supérieure à 0.5");
+                    READRedis.getHumanWithProbability();
+                } else if (choixRead == 5) {
                     System.out.println("Vous avez choisi de quitter le menu Read");
                     continue;
                 }

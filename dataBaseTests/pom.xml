@@ -23,8 +23,6 @@
             <scope>compile</scope>
         </dependency>
 
-
-
         <dependency>
             <groupId>org.json</groupId>
             <artifactId>json</artifactId>
@@ -36,7 +34,6 @@
             <artifactId>jedis</artifactId>
             <version>3.7.0</version>
         </dependency>
-
 
     </dependencies>
 

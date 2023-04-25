@@ -3,10 +3,18 @@ package RedisCRUD;
 import ConnectionBD.ConnectionRedis;
 import org.json.JSONObject;
 import org.json.XML;
+import redis.clients.jedis.Jedis;
 
 import java.io.IOException;
+import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.Duration;
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class CREATERedis {
 
@@ -18,7 +26,6 @@ public class CREATERedis {
 
     }
 
-
     /**
      * Cette fonction permet de créer une clé dans Redis et de lui associer un fichier XML qui
      * sera stocké sous forme JSON.
@@ -26,7 +33,7 @@ public class CREATERedis {
      * @param nameKey
      * @param pathFileOfXML
      */
-    public static void createOnKeyValue(String nameKey, String pathFileOfXML) {
+    public static void createOneKeyValue(String nameKey, String pathFileOfXML) {
         try {
             // Lis le contenu du fichier XML et le convertis en chaîne de caractères
             String fileContent = new String(Files.readAllBytes(Paths.get(pathFileOfXML)));
@@ -53,41 +60,61 @@ public class CREATERedis {
      * Cette fonction permet de prendre tous les fichiers XML dans un dossier il les convertit en JSON et les insère avec une clé
      * qui est le nom du fichier XML.
      */
+
     public static void createAllKeyValue(String pathFolderOfXML) {
-        try {
-            // Lis le contenu du dossier
-            Files.list(Paths.get(pathFolderOfXML))
-                    // Filtre les fichiers XML
-                    .filter(path -> path.toString().endsWith(".xml"))
-                    // Pour chaque fichier XML, on crée une clé/valeur dans Redis
-                    .forEach(path -> {
-                        // Récupère le nom du fichier XML
-                        String fileName = path.getFileName().toString();
-                        // Récupère l'extension du fichier XML
-                        String fileExtension = fileName.substring(fileName.lastIndexOf("."));
-                        // Récupère le nom du fichier sans l'extension
-                        String fileNameWithoutExtension = fileName.substring(0, fileName.lastIndexOf("."));
-                        // Crée la clé
-                        String key = fileNameWithoutExtension + fileExtension;
-                        // Crée la valeur
-                        String value = null;
-                        try {
-                            value = new String(Files.readAllBytes(path));
-                        } catch (IOException e) {
-                            throw new RuntimeException(e);
-                        }
-                        // Insère la clé/valeur dans Redis
-                        instanceDeConnection.getConnection().set(key, value);
-                    });
+        // Enregistre l'heure de début
+        Instant startTime = Instant.now();
+        AtomicInteger compteur = new AtomicInteger();
+        int batchSize = 10; // Définit la taille du lot
+
+        try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(pathFolderOfXML), "*.xml")) {
+            List<Path> paths = new ArrayList<>();
+
+            for (Path path : directoryStream) {
+                paths.add(path);
+                if (paths.size() >= batchSize) {
+                    processBatch(paths, compteur);
+                    paths.clear();
+                }
+            }
+
+            // Traite le dernier lot s'il reste des éléments
+            if (!paths.isEmpty()) {
+                processBatch(paths, compteur);
+            }
+
+            // Enregistre l'heure de fin
+            Instant endTime = Instant.now();
+            // Calcule la durée totale
+            Duration duration = Duration.between(startTime, endTime);
+
+            System.out.println("Nombre de fichier: " + compteur);
+            System.out.println("Durée totale : " + duration.toMillis() + " secondes");
         } catch (IOException e) {
             System.err.println("Erreur lors de la lecture du dossier : " + e.getMessage());
-        } finally {
-            // Ferme la connexion à Redis
-            if (instanceDeConnection.getConnection() != null) {
-                instanceDeConnection.getConnection().close();
-            }
         }
-
     }
+
+    private static void processBatch(List<Path> paths, AtomicInteger compteur) {
+        try (Jedis jedis = instanceDeConnection.getConnection()) {
+            paths.forEach(path -> {
+                compteur.getAndIncrement();
+                String fileName = path.getFileName().toString();
+                String fileExtension = fileName.substring(fileName.lastIndexOf("."));
+                String fileNameWithoutExtension = fileName.substring(0, fileName.lastIndexOf("."));
+                String key = fileNameWithoutExtension + fileExtension;
+
+                String value = null;
+                try {
+                    value = new String(Files.readAllBytes(path));
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+
+                jedis.set(key, value);
+            });
+        }
+    }
+
 
 }

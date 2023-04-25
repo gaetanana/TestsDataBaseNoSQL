@@ -27,7 +27,7 @@ public class ConnectionRedis {
             synchronized (ConnectionRedis.class) {
                 if (instance == null) {
                     instance = new ConnectionRedis();
-                    System.out.println("ConnectionRedis instance created");
+                    //System.out.println("ConnectionRedis instance created");
                 }
             }
         }

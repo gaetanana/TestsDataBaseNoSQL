@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<tt:MetadataStream xmlns:tt="http://www.onvif.org/ver10/schema" xmlns:fc="http://www.onvif.org/ver20/analytics/humanface" xmlns:bd="http://www.onvif.org/ver20/analytics/humanbody">
+ <tt:VideoAnalytics>
+  <tt:Frame UtcTime="2023-04-21T14:55:02.52Z" AplSource="AIPeopleDetection">
+   <tt:Object ObjectId="5569">
+    <tt:Appearance>
+     <tt:Shape>
+      <tt:BoundingBox left="-0.96" top="-0.04" right="-0.74" bottom="-0.72" />
+      <tt:CenterOfGravity x="-0.85" y="-0.38" />
+</tt:Shape>
+     <tt:Class>
+      <tt:Type Likelihood="0.81">Human</tt:Type>
+     </tt:Class>
+    </tt:Appearance>
+    <tt:Extension xmlns="">
+     <Properties>
+      <Property name="DirectionNamed">DownRight</Property>
+      <Property name="Color">1</Property>
+     </Properties>
+    </tt:Extension>
+   </tt:Object>
+  </tt:Frame>
+ </tt:VideoAnalytics>
+</tt:MetadataStream>

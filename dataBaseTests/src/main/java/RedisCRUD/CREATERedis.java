@@ -1,10 +1,15 @@
 package RedisCRUD;
 
 import ConnectionBD.ConnectionRedis;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.json.JSONObject;
 import org.json.XML;
+import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
 import redis.clients.jedis.Jedis;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
@@ -12,9 +17,23 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Duration;
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 public class CREATERedis {
 
@@ -56,64 +75,49 @@ public class CREATERedis {
         }
     }
 
-    /**
-     * Cette fonction permet de prendre tous les fichiers XML dans un dossier il les convertit en JSON et les insère avec une clé
-     * qui est le nom du fichier XML.
-     */
 
+    /**
+     * Cette fonction permet de prendre tous les fichier XML d'un dossier et les concerties en JSON puis
+     * les insère dans Redis avec comme clé le nom du fichier.
+     *
+     * @param pathFolderOfXML
+     */
     public static void createAllKeyValue(String pathFolderOfXML) {
+
         // Enregistre l'heure de début
         Instant startTime = Instant.now();
-        AtomicInteger compteur = new AtomicInteger();
-        int batchSize = 10; // Définit la taille du lot
 
-        try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(pathFolderOfXML), "*.xml")) {
-            List<Path> paths = new ArrayList<>();
+        int compteurFichier = 0;
 
-            for (Path path : directoryStream) {
-                paths.add(path);
-                if (paths.size() >= batchSize) {
-                    processBatch(paths, compteur);
-                    paths.clear();
-                }
-            }
+        File folder = new File(pathFolderOfXML);
+        File[] listOfFiles = folder.listFiles();
 
-            // Traite le dernier lot s'il reste des éléments
-            if (!paths.isEmpty()) {
-                processBatch(paths, compteur);
-            }
+        DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
+        Jedis jedis = new Jedis();
 
-            // Enregistre l'heure de fin
-            Instant endTime = Instant.now();
-            // Calcule la durée totale
-            Duration duration = Duration.between(startTime, endTime);
-
-            System.out.println("Nombre de fichier: " + compteur);
-            System.out.println("Durée totale : " + duration.toMillis() + " secondes");
-        } catch (IOException e) {
-            System.err.println("Erreur lors de la lecture du dossier : " + e.getMessage());
-        }
-    }
-
-    private static void processBatch(List<Path> paths, AtomicInteger compteur) {
-        try (Jedis jedis = instanceDeConnection.getConnection()) {
-            paths.forEach(path -> {
-                compteur.getAndIncrement();
-                String fileName = path.getFileName().toString();
-                String fileExtension = fileName.substring(fileName.lastIndexOf("."));
-                String fileNameWithoutExtension = fileName.substring(0, fileName.lastIndexOf("."));
-                String key = fileNameWithoutExtension + fileExtension;
-
-                String value = null;
+        for (File file : listOfFiles) {
+            if (file.isFile() && file.getName().endsWith(".xml")) {
+                compteurFichier++;
                 try {
-                    value = new String(Files.readAllBytes(path));
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
+                    DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
+                    Document document = documentBuilder.parse(file);
+                    String content = new String(Files.readAllBytes(Paths.get(file.getPath())));
+                    JSONObject jsonObject = XML.toJSONObject(content);
+                    String key = file.getName().substring(0, file.getName().length() - 4);
 
-                jedis.set(key, value);
-            });
+                    jedis.set(key, jsonObject.toString());
+                } catch (ParserConfigurationException | SAXException | IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
+        // Enregistre l'heure de fin
+        Instant endTime = Instant.now();
+        // Calcule la durée d'exécution
+        Duration duration = Duration.between(startTime, endTime);
+        System.out.println("Durée d'exécution : " + duration.toMillis() + " ms");
+        System.out.println("Nombre de fichier traité : " + compteurFichier);
+
     }
 
 

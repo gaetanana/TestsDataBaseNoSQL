@@ -26,11 +26,6 @@ import java.util.Objects;
 public class READMongoDB {
     private static final ConnectionMongoDB instanceDeConnection = ConnectionMongoDB.getInstance();
 
-    public static void main(String[] args) {
-        //getHuman("testCollection");
-        getHumanWithProbability("testCollection");
-    }
-
     /**
      * Cette méthode permet de lire tous les documents dans une collection.
      *

@@ -25,31 +25,6 @@ public class CREATEMongoDB {
 
     private static final ConnectionMongoDB instanceDeConnection = getInstance();
 
-    public static void main(String[] args) throws URISyntaxException {
-        //Créer une collection
-        createCollection("testCollection");
-
-        //Récupère le chemin du fichier JSON
-        //ClassLoader classLoader = CREATEMongoDB.class.getClassLoader();
-        //File file = new File(Objects.requireNonNull(classLoader.getResource("FichersJSON/MetadataJSON.json")).getFile());
-        //String path = file.getAbsolutePath();
-        //Créer un document dans la collection testCollection
-        //createOneDocument("testCollection", path);
-
-        //Récupère le dossier ou se trouve les XML
-        ClassLoader classLoader = CREATEMongoDB.class.getClassLoader();
-
-        URL url = classLoader.getResource("FichiersXML");
-        if (url == null) {
-            System.err.println("Le dossier 'FichiersXML' est introuvable");
-            return;
-        }
-        Path path = Paths.get(url.toURI());
-        String folderPath = path.toString();
-        creationPlusieursDocuments("testCollection", folderPath);
-
-    }
-
     /**
      * Cette méthode permet de créer une collection dans la base de données
      *

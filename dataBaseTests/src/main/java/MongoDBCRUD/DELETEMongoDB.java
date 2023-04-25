@@ -18,12 +18,8 @@ public class DELETEMongoDB {
 
     private static final ConnectionMongoDB instanceDeConnection = ConnectionMongoDB.getInstance();
 
-    public static void main(String[] args) {
-        //deleteCollection("testCollection");
-        //deleteAllDocumentsInOneCollection("testCollection");
-        //C'est un sorte de trigger qui permet de supprimer les documents qui sont plus vieux que 10 minutes
-
-        ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
+    /*
+       ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
         Runnable deleteOldDocuments = () -> deleteDocumentsOlderThanTenMinutes("testCollection");
         executor.scheduleAtFixedRate(deleteOldDocuments, 0, 10, TimeUnit.MINUTES);
 
@@ -39,19 +35,19 @@ public class DELETEMongoDB {
 
         executor.shutdown();
 
-    }
+     */
 
     /**
      * Cette méthode permet de supprimer une collection avec son nom.
+     *
      * @param collectionName
      */
     public static void deleteCollection(String collectionName) {
         boolean exist = READMongoDB.collectionExists(collectionName);
-        if(!exist){
+        if (!exist) {
             System.out.println("Collection " + collectionName + " not exists");
             return;
-        }
-        else{
+        } else {
             instanceDeConnection.getDatabase().getCollection(collectionName).drop();
             System.out.println("Collection " + collectionName + " deleted successfully");
         }
@@ -60,13 +56,12 @@ public class DELETEMongoDB {
     /**
      * Cette méthode permet de supprimer un document avec son ID
      */
-    public static void deleteDocument(String collectionName, String id){
+    public static void deleteDocument(String collectionName, String id) {
         boolean exist = READMongoDB.collectionExists(collectionName);
-        if(!exist){
+        if (!exist) {
             System.out.println("Collection " + collectionName + " not exists");
             return;
-        }
-        else{
+        } else {
             instanceDeConnection.getDatabase().getCollection(collectionName).deleteOne(new org.bson.Document("_id", id));
             System.out.println("Document " + id + " deleted successfully");
         }
@@ -99,8 +94,6 @@ public class DELETEMongoDB {
         collection.deleteMany(filter);
         System.out.println("Documents older than " + tenMinutesAgoString + " deleted successfully");
     }
-
-
 
 
 }

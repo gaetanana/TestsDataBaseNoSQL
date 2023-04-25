@@ -6,7 +6,9 @@ public class mainMongoDB {
     public static void main(String[] args) {
 
         while (true) {
-            System.out.println("Bienvenue dans le programme de test de la base de données MongoDB\n");
+            System.out.println("\n========================================================");
+            System.out.println("== Programme de test de la base de données MongoDB    ==");
+            System.out.println("========================================================\n");
             System.out.println("Veuillez choisir une option :\n");
 
             System.out.println("1 - Create");

@@ -27,7 +27,6 @@ public class CREATEMongoDB {
 
     /**
      * Cette méthode permet de créer une collection dans la base de données
-     *
      * @param collectionName
      */
     public static void createCollection(String collectionName) {

@@ -21,6 +21,8 @@ public class DELETEMongoDB {
     public static void main(String[] args) {
         //deleteCollection("testCollection");
 
+        //C'est un sorte de trigger qui permet de supprimer les documents qui sont plus vieux que 10 minutes
+
         ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
         Runnable deleteOldDocuments = () -> deleteDocumentsOlderThanTenMinutes("testCollection");
         executor.scheduleAtFixedRate(deleteOldDocuments, 0, 10, TimeUnit.MINUTES);
@@ -69,6 +71,21 @@ public class DELETEMongoDB {
             System.out.println("Document " + id + " deleted successfully");
         }
     }
+
+    /**
+     * Cette méthode permet de supprimer tous les documents d'une collection spécifié
+     */
+    public static void deleteAllDocuments(String collectionName) {
+        boolean exist = READMongoDB.collectionExists(collectionName);
+        if (!exist) {
+            System.out.println("Collection " + collectionName + " not exists");
+            return;
+        } else {
+            instanceDeConnection.getDatabase().getCollection(collectionName).deleteMany(new org.bson.Document());
+            System.out.println("All documents from " + collectionName + " deleted successfully");
+        }
+    }
+
 
     /**
      * Cette méthode permet de simuler la suppression de documents plus vieux que 10 minutes

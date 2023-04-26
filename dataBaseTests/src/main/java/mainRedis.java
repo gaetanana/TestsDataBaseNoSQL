@@ -116,7 +116,7 @@ public class mainRedis {
                         }
                         System.out.println("Veuillez entrer le chemin absolu du fichier XML : ");
                         String cheminFichierXML = sc.next();
-                        UPDATERedis.updateOneKeyValue(nomCle, cheminFichierXML);
+                        UPDATERedis.updateOneKeyJSON(nomCle, cheminFichierXML);
                     }
                     else if(choixUpdate == 3){
                         System.out.println("Vous avez choisi de modifier toutes les valeurs des clés pour remplacer 'Human' par une autre valeur");

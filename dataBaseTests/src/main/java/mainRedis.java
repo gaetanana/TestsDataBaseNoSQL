@@ -3,12 +3,14 @@ import RedisCRUD.DELETERedis;
 import RedisCRUD.READRedis;
 import RedisCRUD.UPDATERedis;
 
+import java.io.IOException;
 import java.util.Scanner;
 
 public class mainRedis {
 
     public static void main(String[] args) {
         while (true) {
+            clearConsole();
             System.out.println("\n========================================================");
             System.out.println("|| Programme de test de la base de données Redis      ||");
             System.out.println("========================================================\n");
@@ -38,20 +40,43 @@ public class mainRedis {
                 System.out.print("\nVotre choix : ");
                 int choixCreate = sc.nextInt();
                 if (choixCreate == 1) {
-                    System.out.println("Vous avez choisi de créer une clé avec un fichier XML en valeur");
-                    System.out.println("Veuillez entrer le nom de la clé : ");
+                    System.out.println("\n=======================================================================");
+                    System.out.println("|| Vous avez choisi de créer une clé avec un fichier XML en valeur   ||");
+                    System.out.println("=======================================================================");
+                    System.out.println();
+
+                    System.out.println("Veuillez entrer le nom de votre clé ou tapez ECHAP pour quitter : ");
                     String nomCle = sc.next();
-                    while (READRedis.readOneKeyExist(nomCle) == true) {
-                        System.out.println("La clé existe déjà, veuillez entrer un nom de clé valide : ");
-                        nomCle = sc.next();
+                    if (nomCle.equals("ECHAP")) {
+                        continue;
                     }
-                    System.out.println("Veuillez entrer le chemin absolu du fichier XML : ");
+                    while (READRedis.readOneKeyExist(nomCle) == true) {
+                        System.out.println("La clé existe déjà, veuillez entrer un autre nom de clé : ");
+                        nomCle = sc.next();
+                        if(nomCle.equals("ECHAP")){
+                            break;
+                        }
+                    }
+                    if (nomCle.equals("ECHAP")) {
+                        continue;
+                    }
+
+                    System.out.println("Veuillez entrer le chemin absolu du fichier XML ou tapez ECHAP pour quitter : ");
                     String cheminFichierXML = sc.next();
+                    if (cheminFichierXML.equals("ECHAP")) {
+                        continue;
+
+                    }
+
                     CREATERedis.createOneKeyValue(nomCle, cheminFichierXML);
+
                 } else if (choixCreate == 2) {
                     System.out.println("Vous avez choisi de stocker l'ensemble des fichiers XML d'un dossier dans Redis");
-                    System.out.println("Veuillez entrer le chemin absolu du dossier : ");
+                    System.out.println("Veuillez entrer le chemin absolu du dossier ou tapez ECHAP pour quitter : ");
                     String cheminDossier = sc.next();
+                    if (cheminDossier.equals("ECHAP")) {
+                        continue;
+                    }
                     CREATERedis.createAllKeyValue(cheminDossier);
                 } else if (choixCreate == 3) {
                     System.out.println("\n=======================================================================");
@@ -109,8 +134,6 @@ public class mainRedis {
                         System.out.println("Vous avez choisi de quittez le menu Update");
                         continue;
                     }
-
-
                 }
 
             } else if (choix == 2) {
@@ -131,15 +154,33 @@ public class mainRedis {
 
                 int choixRead = sc.nextInt();
                 if (choixRead == 1) {
+                    boolean nomCleCorrecte = false;
                     System.out.println("Vous avez choisi de lire la valeur d'une clé");
-                    System.out.println("Veuillez entrer le nom de la clé : ");
+                    System.out.println("Veuillez entrer le nom de la clé, ou tapez ECHAP pour quitter : ");
                     String nomCle = sc.next();
-                    while (READRedis.readOneKeyExist(nomCle) == false) {
-                        System.out.println("La clé n'existe pas, veuillez entrer un nom de clé valide : ");
-                        nomCle = sc.next();
+                    if (nomCle.equals("ECHAP")) {
+                        continue;
                     }
-                    READRedis.readOneKeyValue(nomCle);
+                    while (!READRedis.readOneKeyExist(nomCle)) {
+                        System.out.println("Veuillez entrer le nom de la clé, ou tapez ECHAP pour quitter : ");
+                        nomCle = sc.next();
+                        if(READRedis.readOneKeyExist(nomCle)){
+                            nomCleCorrecte = true;
+                            break;
+                        }
+                        if (nomCle.equals("ECHAP")) {
+                            break;
+                        }
+                    }
+                    if(nomCleCorrecte){
+                        READRedis.readOneKeyValue(nomCle);
+                    }
+                    else{
+                        continue;
+                    }
+
                 } else if (choixRead == 2) {
+
                     System.out.println("Vous avez choisi de lire toutes les clés présentes dans la base de données");
                     READRedis.readAllKey();
                 } else if (choixRead == 3) {
@@ -205,6 +246,26 @@ public class mainRedis {
             }
 
         }
+
+
     }
 
+    public static void clearConsole() {
+        try {
+            if (System.getProperty("os.name").contains("Windows")) {
+                new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
+                for (int i = 0; i < 30; i++) {
+                    System.out.println();
+                }
+            } else {
+                System.out.print("\033[H\033[2J");
+                System.out.flush();
+                for (int i = 0; i < 30; i++) {
+                    System.out.println();
+                }
+            }
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
 }

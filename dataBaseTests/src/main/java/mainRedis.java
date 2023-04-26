@@ -1,6 +1,7 @@
 import RedisCRUD.CREATERedis;
 import RedisCRUD.DELETERedis;
 import RedisCRUD.READRedis;
+import RedisCRUD.UPDATERedis;
 
 import java.util.Scanner;
 
@@ -60,9 +61,42 @@ public class mainRedis {
                     System.out.println("||                                                                   ||");
                     System.out.println("|| 1 - Modifier la valeur d'une clé                                  ||");
                     System.out.println("|| 2 - Modifier la valeur d'une clé par un fichier XML               ||");
-                    System.out.println("|| 3 - Modifie toutes les valeurs                                        ||");
-
+                    System.out.println("|| 3 - Modifie toutes les valeurs des clés                           ||");
+                    System.out.println("||     pour remplacer 'Human' par une autre valeur                   ||");
                     System.out.println("|| x - Quitter le menu Update                                        ||");
+                    System.out.println("========================================================================");
+                    System.out.print("\nVotre choix : ");
+                    int choixUpdate = sc.nextInt();
+                    if (choixUpdate == 1) {
+                        System.out.println("Vous avez choisi de modifier la valeur d'une clé");
+                        System.out.println("Veuillez entrer le nom de la clé : ");
+                        String nomCle = sc.next();
+                        while (READRedis.readOneKeyExist(nomCle) == false) {
+                            System.out.println("La clé n'existe pas, veuillez entrer un nom de clé valide : ");
+                            nomCle = sc.next();
+                        }
+                        System.out.println("Veuillez entrer la nouvelle valeur de la clé : ");
+                        String valeurCle = sc.next();
+                        UPDATERedis.updateOneKeyValue(nomCle, valeurCle);
+                    }
+                    else if(choixUpdate == 2){
+                        System.out.println("Vous avez choisi de modifier la valeur d'une clé par un fichier XML (qui sera stocké sous forme JSON)");
+                        System.out.println("Veuillez entrer le nom de la clé : ");
+                        String nomCle = sc.next();
+                        while (READRedis.readOneKeyExist(nomCle) == false) {
+                            System.out.println("La clé n'existe pas, veuillez entrer un nom de clé valide : ");
+                            nomCle = sc.next();
+                        }
+                        System.out.println("Veuillez entrer le chemin absolu du fichier XML : ");
+                        String cheminFichierXML = sc.next();
+                        UPDATERedis.updateOneKeyValue(nomCle, cheminFichierXML);
+                    }
+                    else if(choixUpdate == 4){
+                        System.out.println("Vous avez choisi de quittez le menu Update");
+                        continue;
+                    }
+
+
                 }
 
             } else if (choix == 2) {
@@ -150,8 +184,7 @@ public class mainRedis {
                 System.out.println("|| Vous avez choisi de quitter le programme. Au revoir!||");
                 System.out.println("========================================================");
                 System.exit(0);
-            }
-            else{
+            } else {
                 System.out.println("\n============================================");
                 System.out.println("|| Veuillez entrer un nombre entre 1 et 5 ||");
                 System.out.println("============================================");

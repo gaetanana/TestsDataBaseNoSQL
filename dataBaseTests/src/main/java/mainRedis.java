@@ -53,8 +53,13 @@ public class mainRedis {
                     String cheminDossier = sc.next();
                     CREATERedis.createAllKeyValue(cheminDossier);
                 } else if (choixCreate == 3) {
-                    System.out.println("Vous avez choisi de quitter le menu Create");
-                    continue;
+                    System.out.println("\n=====================================================================");
+                    System.out.println("||                          Menu Update                              ||");
+                    System.out.println("=======================================================================");
+                    System.out.println("=================== Veuillez choisir une option : =====================");
+                    System.out.println("||                                                                   ||");
+                    System.out.println("|| 1 - Modifier la valeur d'une clé                                  ||");
+
                 }
 
             } else if (choix == 2) {

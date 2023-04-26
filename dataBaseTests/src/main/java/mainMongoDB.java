@@ -1,14 +1,24 @@
+import java.io.IOException;
 import java.util.Scanner;
 
 import MongoDBCRUD.*;
 
 public class mainMongoDB {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
+        System.out.println("truc");
+        clearConsole();
 
         while (true) {
+            clearConsole();
             System.out.println("\n========================================================");
             System.out.println("|| Programme de test de la base de données MongoDB    ||");
             System.out.println("========================================================\n");
+
+            System.out.println("==========================================================");
+            System.out.println("||Dans ce programme vous pouvez effectuer les opérations||");
+            System.out.println("||CRUD sur une base de données MongoDB.                 ||");
+            System.out.println("==========================================================\n");
+
             System.out.println("============== Veuillez choisir une option : ===========");
             System.out.println("||                                                    ||");
             System.out.println("|| 1 - Create                                         ||");
@@ -267,4 +277,25 @@ public class mainMongoDB {
 
 
     }
+
+    public static void clearConsole() {
+        try {
+            if (System.getProperty("os.name").contains("Windows")) {
+                new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
+                for (int i = 0; i < 30; i++) {
+                    System.out.println();
+                }
+            } else {
+                System.out.print("\033[H\033[2J");
+                System.out.flush();
+                for (int i = 0; i < 30; i++) {
+                    System.out.println();
+                }
+            }
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+
 }

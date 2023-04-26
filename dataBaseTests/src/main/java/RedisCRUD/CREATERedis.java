@@ -39,12 +39,6 @@ public class CREATERedis {
 
     private static final ConnectionRedis instanceDeConnection = ConnectionRedis.getInstance();
 
-    public static void main(String[] args) {
-        //createOnKeyValue("key1", "C:\\Users\\g.gonfiantini\\Desktop\\TestsDataBaseNoSQL\\dataBaseTests\\src\\main\\resources\\FichiersXML\\Onvif_Metadata_C1000_2023-04-21_16-48-59.648.xml");
-        createAllKeyValue("C:\\Users\\g.gonfiantini\\Desktop\\TestsDataBaseNoSQL\\dataBaseTests\\src\\main\\resources\\FichiersXML\\");
-
-    }
-
     /**
      * Cette fonction permet de créer une clé dans Redis et de lui associer un fichier XML qui
      * sera stocké sous forme JSON.
@@ -117,7 +111,6 @@ public class CREATERedis {
         Duration duration = Duration.between(startTime, endTime);
         System.out.println("Durée d'exécution : " + duration.toMillis() + " ms");
         System.out.println("Nombre de fichier traité : " + compteurFichier);
-
     }
 
 

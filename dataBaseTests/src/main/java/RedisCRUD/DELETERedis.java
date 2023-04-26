@@ -9,9 +9,6 @@ public class DELETERedis {
 
     private static final ConnectionRedis instanceDeConnection = ConnectionRedis.getInstance();
 
-    public static void main(String[] args) {
-        deleteOneKey("Onvif_Metadata_C1000_2023-04-21_16-48-58.629.xml");
-    }
 
     /**
      * Cette fonction supprime une clé dans Redis avec sa valeur

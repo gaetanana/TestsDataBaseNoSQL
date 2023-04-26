@@ -139,10 +139,10 @@ public class mainMongoDB {
                 System.out.println("||                                                     ||");
                 System.out.println("========================================================");
                 System.out.print("\nVotre choix : ");
-                
+
                 int choixUpdate = sc.nextInt();
-                
-                if(choixUpdate == 1){
+
+                if (choixUpdate == 1) {
                     System.out.println("Vous avez choisi de modifier un document");
                     System.out.println("Veuillez entrer le nom de la collection : ");
                     String nomCollection = sc.next();
@@ -158,11 +158,48 @@ public class mainMongoDB {
                     }
                     System.out.println("Veuillez entrer la nouvelle valeur : ");
                     String newValue = sc.next();
-                    UPDATEMongoDB.updateOneHumanDocument(nomCollection,id,newValue);
+                    UPDATEMongoDB.updateOneHumanDocument(nomCollection, id, newValue);
                 } else if (choix == 2) {
-                    
+                    System.out.println("Vous avez choisi de modifier tous les documents qui possèdent 'Human'");
+                    System.out.println("Veuillez entrer le nom de la collection : ");
+                    String nomCollection = sc.next();
+                    while (READMongoDB.collectionExists(nomCollection) == false) {
+                        System.out.println("La collection n'existe pas, veuillez entrer un nom de collection valide : ");
+                        nomCollection = sc.next();
+                    }
+                    System.out.println("Veuillez entrer la nouvelle valeur : ");
+                    String newValue = sc.next();
+                    UPDATEMongoDB.updateMultipleHumanDocuments(nomCollection, newValue);
+
                 } else if (choix == 3) {
-                    
+                    System.out.println("Vous avez choisi de modifier un champ de tous les documents présents dans une collection");
+
+                    System.out.println("-----------------------------------------------------------------------------------------------------------------------------------------");
+                    System.out.println("|!!! Attention si dans la collection il y a des documents qui possèdent plusieurs champs avec le même nom, seulement le premier champ !!!|");
+                    System.out.println("-----------------------------------------------------------------------------------------------------------------------------------------");
+
+
+                    System.out.println("Veuillez entrer le nom de la collection : ");
+                    String nomCollection = sc.next();
+                    while (READMongoDB.collectionExists(nomCollection) == false) {
+                        System.out.println("La collection n'existe pas, veuillez entrer un nom de collection valide : ");
+                        nomCollection = sc.next();
+                    }
+                    System.out.println("Veuillez entrer le nom du champ à modifier : ");
+                    String nomChamp = sc.next();
+                    while (READMongoDB.fieldExists(nomCollection, nomChamp) == false) {
+                        System.out.println("Le champ n'existe pas, veuillez entrer un nom de champ valide : ");
+                        nomChamp = sc.next();
+                    }
+                    System.out.println("Veuillez entrer la nouvelle valeur : ");
+                    String newValue = sc.next();
+                    UPDATEMongoDB.updateFieldContent(nomCollection, nomChamp, newValue);
+
+                } else if (choix == 4) {
+                    System.out.println("Vous avez choisi de quitter le menu Update");
+                    continue;
+                } else {
+                    System.out.println("Veuillez entrer un nombre entre 1 et 4");
                 }
 
 

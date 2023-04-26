@@ -1,6 +1,8 @@
 package MongoDBCRUD;
 
 import ConnectionBD.ConnectionMongoDB;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
@@ -18,6 +20,7 @@ import org.bson.types.ObjectId;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -151,5 +154,58 @@ public class READMongoDB {
         MongoCollection<Document> collection = instanceDeConnection.getDatabase().getCollection(collectionName);
         Document document = collection.find(Filters.eq("_id", new ObjectId(id))).first();
         return document != null;
+    }
+
+    /**
+     * Cette fonction permet de savoir il existe un champ dans un document JSON présent dans tous les documents d'une collection
+     */
+    public static boolean fieldExists(String collectionName, String field) {
+        MongoCollection<Document> collection = instanceDeConnection.getDatabase().getCollection(collectionName);
+
+        // Trouver un document avec le champ spécifié à l'intérieur de "metadata"
+        Document document = collection.find(Filters.exists("metadata." + field)).first();
+
+        // Si le champ est trouvé dans le document, retourner 'true'
+        if (document != null) {
+            return true;
+        }
+
+        // Sinon, vérifier si le champ existe en tant que champ imbriqué dans les documents
+        FindIterable<Document> documents = collection.find();
+
+        for (Document doc : documents) {
+            Document metadata = doc.get("metadata", Document.class);
+            if (metadata != null && fieldExistsInDocument(metadata, field)) {
+                return true;
+            }
+        }
+
+        // Si le champ n'est pas trouvé, retourner 'false'
+        return false;
+    }
+
+    private static boolean fieldExistsInDocument(Document document, String field) {
+        for (String key : document.keySet()) {
+            if (key.equals(field)) {
+                return true;
+            } else if (document.get(key) instanceof Document) {
+                if (fieldExistsInDocument(document.get(key, Document.class), field)) {
+                    return true;
+                }
+            } else if (document.get(key) instanceof List) {
+                for (Object item : (List<?>) document.get(key)) {
+                    if (item instanceof Document) {
+                        if (fieldExistsInDocument((Document) item, field)) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    public static void main(String[] args){
+        System.out.println(fieldExists("testCollection","xmlns"));
     }
 }

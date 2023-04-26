@@ -1,31 +1,20 @@
 package MongoDBCRUD;
 
 import ConnectionBD.ConnectionMongoDB;
-import com.mongodb.BasicDBObject;
-import com.mongodb.DBObject;
+import com.mongodb.Block;
 import com.mongodb.client.*;
-import com.mongodb.client.model.Filters;
-import com.mongodb.client.model.Updates;
-import com.mongodb.client.result.UpdateResult;
 import org.bson.Document;
-import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
 
-import java.util.Arrays;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.mongodb.client.model.Filters.eq;
-import static com.mongodb.client.model.Updates.set;
 
 public class UPDATEMongoDB {
     private static final ConnectionMongoDB instanceDeConnection = ConnectionMongoDB.getInstance();
-
-    public static void main(String[] args) {
-        //updateOneHumanDocument("testCollection", "6448d2b5ad24b95318868a55","Gros chien");
-        //updateMultipleHumanDocuments("testCollection", "Chien");
-
-        //updateFieldContent("testCollection", "content", "test");
-    }
 
     /**
      * Cette fonction permet de mettre à jour un seul document avec son id dans une collection si le document a le content type "Human" avec une nouvelle valeur
@@ -35,6 +24,7 @@ public class UPDATEMongoDB {
      * @param idDocument
      */
     public static void updateOneHumanDocument(String nomCollection, String idDocument, String newContentValue) {
+
         MongoCollection<Document> collection = instanceDeConnection.getDatabase().getCollection(nomCollection);
 
         Document filter = new Document("_id", new ObjectId(idDocument));
@@ -66,6 +56,7 @@ public class UPDATEMongoDB {
 
     /**
      * Cette fonction permet de mettre à jour tous les documents qui ont un content type "Human" avec une nouvelle valeur qui remplace "Human".
+     * Si il dans un document il y a plusieurs fois le même champ en paramètre, seulement le premier sera mis à jour.
      */
     public static void updateMultipleHumanDocuments(String nomCollection, String newContentValue) {
         MongoCollection<Document> collection = instanceDeConnection.getDatabase().getCollection(nomCollection);
@@ -135,9 +126,56 @@ public class UPDATEMongoDB {
 
     /**
      * Cette fonction pourra changer la valeur d'un champ de tous les documents d'une collection avec une nouvelle valeur.
+     * Mais si dans le document il y a plusieurs fois le même champ en paramètre, seulement le premier sera mis à jour.
      */
+    public static void updateFieldContent(String nomCollection, String fieldName, Object newValue) {
+        // Enregistre l'heure de début
+        Instant startTime = Instant.now();
 
+        AtomicInteger compteurDocument = new AtomicInteger();
 
+        MongoCollection<Document> collection = instanceDeConnection.getDatabase().getCollection(nomCollection);
+
+        collection.find().forEach((Block<? super Document>) document -> {
+            Document metadata = document.get("metadata", Document.class);
+            if (updateNestedField(metadata, fieldName, newValue)) {
+                // Sauvegarder le document mis à jour
+                collection.replaceOne(eq("_id", document.getObjectId("_id")), document);
+                compteurDocument.getAndIncrement();
+            }
+        });
+
+        // Enregistre l'heure de fin
+        Instant endTime = Instant.now();
+        // Calcule la durée totale
+        Duration duration = Duration.between(startTime, endTime);
+        System.out.println("Nombre de documents mis à jour: " + compteurDocument.get());
+        System.out.println("Durée totale: " + duration.toMillis() + " ms");
+
+        System.out.println("Champ mis à jour avec succès");
+    }
+
+    private static boolean updateNestedField(Document document, String fieldName, Object newValue) {
+        for (String key : document.keySet()) {
+            if (key.equals(fieldName)) {
+                document.put(fieldName, newValue);
+                return true;
+            } else if (document.get(key) instanceof Document) {
+                if (updateNestedField(document.get(key, Document.class), fieldName, newValue)) {
+                    return true;
+                }
+            } else if (document.get(key) instanceof List) {
+                for (Object item : (List<?>) document.get(key)) {
+                    if (item instanceof Document) {
+                        if (updateNestedField((Document) item, fieldName, newValue)) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        return false;
+    }
 
 
 }

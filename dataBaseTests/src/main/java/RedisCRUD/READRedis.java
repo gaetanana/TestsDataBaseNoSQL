@@ -13,12 +13,6 @@ public class READRedis {
 
     private static final ConnectionRedis instanceDeConnection = ConnectionRedis.getInstance();
 
-    public static void main(String[] args) {
-        //readOneKeyValue("Onvif_Metadata_C1000_2023-04-21_16-44-55.650.xml");
-        //readAllKey();
-        //readAllKeyWithHuman();
-    }
-
     /**
      * Cette fonction permet de retrouver la valeur d'une clé dans Redis
      */

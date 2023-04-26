@@ -59,7 +59,10 @@ public class mainRedis {
                     System.out.println("=================== Veuillez choisir une option : =====================");
                     System.out.println("||                                                                   ||");
                     System.out.println("|| 1 - Modifier la valeur d'une clé                                  ||");
+                    System.out.println("|| 2 - Modifier la valeur d'une clé par un fichier XML               ||");
+                    System.out.println("|| 3 - Modifie toutes les valeurs                                        ||");
 
+                    System.out.println("|| x - Quitter le menu Update                                        ||");
                 }
 
             } else if (choix == 2) {

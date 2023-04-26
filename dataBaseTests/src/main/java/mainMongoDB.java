@@ -22,17 +22,17 @@ public class mainMongoDB {
             Scanner sc = new Scanner(System.in);
             int choix = sc.nextInt();
             if (choix == 1) {
-                System.out.println("\n========================================================");
-                System.out.println("||                  Menu Create                       ||");
-                System.out.println("========================================================");
-                System.out.println("========= Veuillez choisir une option : ===============");
-                System.out.println("||                                                    ||");
-                System.out.println("|| 1 - Créer une collection                           ||");
-                System.out.println("|| 2 - Créer un document                              ||");
-                System.out.println("|| 3 - Créer tous les documents d'un dossier          ||");
-                System.out.println("|| 4 - Quitter le menu Create                         ||");
-                System.out.println("||                                                    ||");
-                System.out.println("========================================================");
+                System.out.println("\n=====================================================================");
+                System.out.println("||                          Menu Create                              ||");
+                System.out.println("=======================================================================");
+                System.out.println("=================== Veuillez choisir une option : =====================");
+                System.out.println("||                                                                   ||");
+                System.out.println("|| 1 - Créer une collection                                          ||");
+                System.out.println("|| 2 - Créer un document (Un fichier XML).                           ||");
+                System.out.println("|| 3 - Créer plusieurs documents (Tous les fichiers XML d'un dossier)||");
+                System.out.println("|| 4 - Quitter le menu Create                                        ||");
+                System.out.println("||                                                                   ||");
+                System.out.println("========================================================================");
                 System.out.print("\nVotre choix : ");
                 int choixCreate = sc.nextInt();
                 //CREATE
@@ -131,15 +131,39 @@ public class mainMongoDB {
                 System.out.println("==                  Menu Update                       ==");
                 System.out.println("========================================================\n");
                 System.out.println("========= Veuillez choisir une option : ===============");
-                System.out.println("||                                                    ||");
-                System.out.println("|| 1 - Modifier un document                           ||");
-                System.out.println("|| 2 - Modifier         ||");
-                System.out.println("|| 3 - Supprimer tous les documents d'une collection  ||");
-                System.out.println("|| 4 - Quitter le menu Delete                         ||");
-                System.out.println("||                                                    ||");
+                System.out.println("||                                                     ||");
+                System.out.println("|| 1 - Modifier un document qui a la valeur 'Human'    ||");
+                System.out.println("|| 2 - Modifier tous les documents qui possèdent 'Human||");
+                System.out.println("|| 3 - Supprimer tous les documents d'une collection   ||");
+                System.out.println("|| 4 - Quitter le menu UPDATE                          ||");
+                System.out.println("||                                                     ||");
                 System.out.println("========================================================");
-
-
+                System.out.print("\nVotre choix : ");
+                
+                int choixUpdate = sc.nextInt();
+                
+                if(choixUpdate == 1){
+                    System.out.println("Vous avez choisi de modifier un document");
+                    System.out.println("Veuillez entrer le nom de la collection : ");
+                    String nomCollection = sc.next();
+                    while (READMongoDB.collectionExists(nomCollection) == false) {
+                        System.out.println("La collection n'existe pas, veuillez entrer un nom de collection valide : ");
+                        nomCollection = sc.next();
+                    }
+                    System.out.println("Veuillez entrer l'id du document à modifier : ");
+                    String id = sc.next();
+                    while (READMongoDB.idExists(nomCollection, id) == false) {
+                        System.out.println("L'id n'existe pas, veuillez entrer un id valide : ");
+                        id = sc.next();
+                    }
+                    System.out.println("Veuillez entrer la nouvelle valeur : ");
+                    String newValue = sc.next();
+                    UPDATEMongoDB.updateOneHumanDocument(nomCollection,id,newValue);
+                } else if (choix == 2) {
+                    
+                } else if (choix == 3) {
+                    
+                }
 
 
             } else if (choix == 4) {

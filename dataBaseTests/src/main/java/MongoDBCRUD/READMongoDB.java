@@ -14,6 +14,7 @@ import org.bson.Document;
 import org.bson.conversions.Bson;
 import org.bson.json.JsonMode;
 import org.bson.json.JsonWriterSettings;
+import org.bson.types.ObjectId;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -51,7 +52,8 @@ public class READMongoDB {
 
 
     /**
-     * Cette méthode permet de trouver combien il y a de documents dans lequelle la valeur de la clé "content" sous "tt:Type" est égal à "Human"
+     * Cette fonction permet de trouver combien il y a de documents dans lequelle la valeur de la clé "content" sous "tt:Type" est égal à "Human"
+     *
      * @param collectionName
      */
     public static void getHuman(String collectionName) {
@@ -83,7 +85,7 @@ public class READMongoDB {
     }
 
     /**
-     * Cette méthode permet de trouver combien il y a de documents dans lequelle la valeur de la clé "content" sous "tt:Type" est égal à "Human"
+     * Cette fonction permet de trouver combien il y a de documents dans lequelle la valeur de la clé "content" sous "tt:Type" est égal à "Human"
      * avec une probabilité supérieur à 0.5
      */
     public static void getHumanWithProbability(String collectionName) {
@@ -118,6 +120,13 @@ public class READMongoDB {
         System.out.println("Nombre de résultats: " + nbResult);
     }
 
+    /**
+     * Cette fonction permet de retrouver tous les documents d'une collection en donnant une date.
+     */
+    public static void getDocumentsWithDate(String nomCollection, String date) {
+
+    }
+
 
     /**
      * Cette méthode me permet de savoir si une collection existe
@@ -135,5 +144,12 @@ public class READMongoDB {
         return false;
     }
 
-
+    /**
+     * Cette méthode permet de vérifier si il existe un id dans une collection
+     */
+    public static boolean idExists(String collectionName, String id) {
+        MongoCollection<Document> collection = instanceDeConnection.getDatabase().getCollection(collectionName);
+        Document document = collection.find(Filters.eq("_id", new ObjectId(id))).first();
+        return document != null;
+    }
 }

@@ -25,13 +25,13 @@ public class mainRedis {
             Scanner sc = new Scanner(System.in);
             int choix = sc.nextInt();
             if (choix == 1) {
-                System.out.println("\n=====================================================================");
+                System.out.println("\n=======================================================================");
                 System.out.println("||                          Menu Create                              ||");
                 System.out.println("=======================================================================");
                 System.out.println("=================== Veuillez choisir une option : =====================");
                 System.out.println("||                                                                   ||");
                 System.out.println("|| 1 - Créer une clé avec un fichier XML en valeur                   ||");
-                System.out.println("|| 2 - Stocker l'ensemble des fichiers XML d'un dossier dans Redis  ||");
+                System.out.println("|| 2 - Stocker l'ensemble des fichiers XML d'un dossier dans Redis   ||");
                 System.out.println("|| 3 - Quitter le menu Create                                        ||");
                 System.out.println("||                                                                   ||");
                 System.out.println("========================================================================");
@@ -54,7 +54,7 @@ public class mainRedis {
                     String cheminDossier = sc.next();
                     CREATERedis.createAllKeyValue(cheminDossier);
                 } else if (choixCreate == 3) {
-                    System.out.println("\n=====================================================================");
+                    System.out.println("\n=======================================================================");
                     System.out.println("||                          Menu Update                              ||");
                     System.out.println("=======================================================================");
                     System.out.println("=================== Veuillez choisir une option : =====================");
@@ -63,7 +63,9 @@ public class mainRedis {
                     System.out.println("|| 2 - Modifier la valeur d'une clé par un fichier XML               ||");
                     System.out.println("|| 3 - Modifie toutes les valeurs des clés                           ||");
                     System.out.println("||     pour remplacer 'Human' par une autre valeur                   ||");
-                    System.out.println("|| x - Quitter le menu Update                                        ||");
+                    System.out.println("|| 4 - Modifie toutes les valeurs des clés pour remplacer le content ||");
+                    System.out.println("||     par une auttre valeur                                         ||");
+                    System.out.println("|| 5 - Quitter le menu Update                                        ||");
                     System.out.println("========================================================================");
                     System.out.print("\nVotre choix : ");
                     int choixUpdate = sc.nextInt();
@@ -91,7 +93,19 @@ public class mainRedis {
                         String cheminFichierXML = sc.next();
                         UPDATERedis.updateOneKeyValue(nomCle, cheminFichierXML);
                     }
+                    else if(choixUpdate == 3){
+                        System.out.println("Vous avez choisi de modifier toutes les valeurs des clés pour remplacer 'Human' par une autre valeur");
+                        System.out.println("Veuillez entrer la nouvelle valeur : ");
+                        String valeurCle = sc.next();
+                        UPDATERedis.updateAllKeyJSONWithValueHuman(valeurCle);
+                    }
                     else if(choixUpdate == 4){
+                        System.out.println("Vous avez choisi de modifier toutes les valeurs des clés pour remplacer le content par une autre valeur");
+                        System.out.println("Veuillez entrer la nouvelle valeur : ");
+                        String valeurCle = sc.next();
+                        UPDATERedis.updateAllKeyJSONWithValue(valeurCle);
+                    }
+                    else if(choixUpdate == 5){
                         System.out.println("Vous avez choisi de quittez le menu Update");
                         continue;
                     }
@@ -100,19 +114,19 @@ public class mainRedis {
                 }
 
             } else if (choix == 2) {
-                System.out.println("\n=====================================================================");
+                System.out.println("\n=======================================================================");
                 System.out.println("||                          Menu Read                                ||");
                 System.out.println("=======================================================================");
                 System.out.println("=================== Veuillez choisir une option : =====================");
                 System.out.println("||                                                                   ||");
-                System.out.println("|| 1 - Lire la valeur d'une clé                                     ||");
-                System.out.println("|| 2 - Lire toutes les clés présentes dans la base de données       ||");
-                System.out.println("|| 3 - Lire toutes les clés qui a dans les valeurs un humain        ||");
-                System.out.println("|| 4 - Lire toutes les clés qui a dans les valeurs un humain avec   ||");
-                System.out.println("||     une probabilité de survie supérieure à 0.5                   ||");
-                System.out.println("|| 5 - Quitter le menu Read                                         ||");
+                System.out.println("|| 1 - Lire la valeur d'une clé                                      ||");
+                System.out.println("|| 2 - Lire toutes les clés présentes dans la base de données        ||");
+                System.out.println("|| 3 - Lire toutes les clés qui a dans les valeurs un humain         ||");
+                System.out.println("|| 4 - Lire toutes les clés qui a dans les valeurs un humain avec    ||");
+                System.out.println("||     une probabilité de survie supérieure à 0.5                    ||");
+                System.out.println("|| 5 - Quitter le menu Read                                          ||");
                 System.out.println("||                                                                   ||");
-                System.out.println("========================================================================");
+                System.out.println("=======================================================================");
                 System.out.print("\nVotre choix : ");
 
                 int choixRead = sc.nextInt();

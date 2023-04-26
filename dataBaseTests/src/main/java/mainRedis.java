@@ -8,26 +8,33 @@ public class mainRedis {
 
     public static void main(String[] args) {
         while (true) {
-            System.out.println("\n==================================================");
-            System.out.println("== Programme de test de la base de données Redis ==");
-            System.out.println("==================================================\n");
-            System.out.println("Veuillez choisir une option :\n");
-
-            System.out.println("1 - Create");
-            System.out.println("2 - Read");
-            System.out.println("3 - Update");
-            System.out.println("4 - Delete");
-            System.out.println("5 - Quitter le programme");
-            System.out.println("\nVotre choix : ");
+            System.out.println("\n========================================================");
+            System.out.println("|| Programme de test de la base de données Redis      ||");
+            System.out.println("========================================================\n");
+            System.out.println("============== Veuillez choisir une option : ===========");
+            System.out.println("||                                                    ||");
+            System.out.println("|| 1 - Create                                         ||");
+            System.out.println("|| 2 - Read                                           ||");
+            System.out.println("|| 3 - Update                                         ||");
+            System.out.println("|| 4 - Delete                                         ||");
+            System.out.println("|| 5 - Quitter le programme                           ||");
+            System.out.println("||                                                    ||");
+            System.out.println("========================================================");
+            System.out.print("\nVotre choix : ");
             Scanner sc = new Scanner(System.in);
             int choix = sc.nextInt();
             if (choix == 1) {
-                System.out.println("Vous êtes dans le menu Create");
-                System.out.println("Veuillez choisir une option :\n");
-                System.out.println("1 - Créer une clé avec un fichier XML en valeur");
-                System.out.println("2 - Stocker l'ensemble des fichiers XML d'un dossier dans Redis");
-                System.out.println("3 - Quitter le menu Create");
-                System.out.println("\nVotre choix : ");
+                System.out.println("\n=====================================================================");
+                System.out.println("||                          Menu Create                              ||");
+                System.out.println("=======================================================================");
+                System.out.println("=================== Veuillez choisir une option : =====================");
+                System.out.println("||                                                                   ||");
+                System.out.println("|| 1 - Créer une clé avec un fichier XML en valeur                   ||");
+                System.out.println("|| 2 - Stocker l'ensemble des fichiers XML d'un dossier dans Redis  ||");
+                System.out.println("|| 3 - Quitter le menu Create                                        ||");
+                System.out.println("||                                                                   ||");
+                System.out.println("========================================================================");
+                System.out.print("\nVotre choix : ");
                 int choixCreate = sc.nextInt();
                 if (choixCreate == 1) {
                     System.out.println("Vous avez choisi de créer une clé avec un fichier XML en valeur");
@@ -51,15 +58,20 @@ public class mainRedis {
                 }
 
             } else if (choix == 2) {
-                System.out.println("Vous êtes dans le menu Read");
-                System.out.println("Veuillez choisir une option :\n");
-                System.out.println("1 - Lire la valeur d'une clé");
-                System.out.println("2 - Lire toutes les clés présentes dans la base de données");
-                System.out.println("3 - Lire toutes les clés qui a dans les valeurs un humain");
-                System.out.println("4 - Lire toutes les clés qui a dans les valeurs un humain avec une probabilité de survie supérieure à 0.5");
-                System.out.println("5 - Quitter le menu Read");
-
-                System.out.println("\nVotre choix : ");
+                System.out.println("\n=====================================================================");
+                System.out.println("||                          Menu Read                                ||");
+                System.out.println("=======================================================================");
+                System.out.println("=================== Veuillez choisir une option : =====================");
+                System.out.println("||                                                                   ||");
+                System.out.println("|| 1 - Lire la valeur d'une clé                                     ||");
+                System.out.println("|| 2 - Lire toutes les clés présentes dans la base de données       ||");
+                System.out.println("|| 3 - Lire toutes les clés qui a dans les valeurs un humain        ||");
+                System.out.println("|| 4 - Lire toutes les clés qui a dans les valeurs un humain avec   ||");
+                System.out.println("||     une probabilité de survie supérieure à 0.5                   ||");
+                System.out.println("|| 5 - Quitter le menu Read                                         ||");
+                System.out.println("||                                                                   ||");
+                System.out.println("========================================================================");
+                System.out.print("\nVotre choix : ");
 
                 int choixRead = sc.nextInt();
                 if (choixRead == 1) {
@@ -90,12 +102,17 @@ public class mainRedis {
                 System.out.println("Veuillez choisir une option :\n");
 
             } else if (choix == 4) {
-                System.out.println("Vous êtes dans le menu Delete");
-                System.out.println("Veuillez choisir une option :\n");
-                System.out.println("1 - Supprimer une clé");
-                System.out.println("2 - Supprimer toutes les clés");
-                System.out.println("3 - Supprimer les 50 dernières clés");
-                System.out.println("4 - Quitter le menu Delete");
+                System.out.println("\n=====================================================================");
+                System.out.println("||                          Menu Delete                              ||");
+                System.out.println("=======================================================================");
+                System.out.println("=================== Veuillez choisir une option : =====================");
+                System.out.println("||                                                                   ||");
+                System.out.println("|| 1 - Supprimer une clé                                             ||");
+                System.out.println("|| 2 - Supprimer toutes les clés                                     ||");
+                System.out.println("|| 3 - Supprimer les 50 dernières clés                               ||");
+                System.out.println("|| 4 - Quitter le menu Delete                                        ||");
+                System.out.println("||                                                                   ||");
+                System.out.println("========================================================================");
 
                 System.out.println("\nVotre choix : ");
                 int choixDelete = sc.nextInt();
@@ -121,8 +138,15 @@ public class mainRedis {
                 }
 
             } else if (choix == 5) {
-                System.out.println("Vous avez choisi de quitter le programme");
+                System.out.println("\n========================================================");
+                System.out.println("|| Vous avez choisi de quitter le programme. Au revoir!||");
+                System.out.println("========================================================");
                 System.exit(0);
+            }
+            else{
+                System.out.println("\n============================================");
+                System.out.println("|| Veuillez entrer un nombre entre 1 et 5 ||");
+                System.out.println("============================================");
             }
 
         }

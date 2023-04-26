@@ -34,13 +34,13 @@ public class CREATEMongoDB {
             //Vérifie si la collection existe
             boolean exist = READMongoDB.collectionExists(collectionName);
             if (exist) {
-                System.err.println("Collection " + collectionName + " already exists");
+                System.err.println("Collection " + collectionName + " existe déjà");
                 return;
             }
             instanceDeConnection.getDatabase().createCollection(collectionName);
-            System.out.println("Collection " + collectionName + " created successfully");
+            System.out.println("Collection " + collectionName + " créée avec succès");
         } catch (Exception e) {
-            System.err.println("Error creating collection: " + e.getMessage());
+            System.err.println("Erreur lors de la création de la collection: " + e.getMessage());
         }
     }
 
@@ -59,10 +59,10 @@ public class CREATEMongoDB {
         try {
             boolean exist = READMongoDB.collectionExists(collectionName);
             if (!exist) {
-                System.err.println("Collection " + collectionName + " does not exist");
+                System.err.println("Collection " + collectionName + " n'existe pas");
                 return;
             } else {
-                System.out.println("Collection " + collectionName + " exists");
+                System.out.println("Collection " + collectionName + " existe");
                 // Read the file content and create a JSON object from XML content
                 String fileContent = new String(Files.readAllBytes(Paths.get(filePath)));
                 JSONObject jsonObject = XML.toJSONObject(fileContent);
@@ -74,10 +74,10 @@ public class CREATEMongoDB {
                         .append("metadata", document)
                 );
             }
-            System.out.println("Document created successfully");
+            System.out.println("Document créé avec succès");
 
         } catch (Exception e) {
-            System.err.println("Error creating document: " + e.getMessage());
+            System.err.println("Erreur lors de la création du document: " + e.getMessage());
         }
 
     }
@@ -96,7 +96,7 @@ public class CREATEMongoDB {
         try {
             boolean exist = READMongoDB.collectionExists(collectionName);
             if (!exist) {
-                System.err.println("Collection " + collectionName + " does not exist");
+                System.err.println("Collection " + collectionName + " n'existe pas");
                 return;
             } else {
                 //System.out.println("Collection " + collectionName + " exists");
@@ -113,7 +113,7 @@ public class CREATEMongoDB {
                 }
                 // Vérifier si des fichiers XML ont été trouvés
                 if (listOfFiles == null || listOfFiles.length == 0) {
-                    System.err.println("No XML files found in the folder");
+                    System.err.println("Aucun fichier XML trouvé dans le dossier");
                     return;
                 }
 
@@ -142,8 +142,8 @@ public class CREATEMongoDB {
                 Duration duration = Duration.between(startTime, endTime);
 
                 System.out.println("Nombre de fichier: " + compteur);
-                System.out.println("Durée totale : " + duration.toMillis() + " secondes");
-                System.out.println("Documents created successfully");
+                System.out.println("Durée totale : " + duration.toMillis() + " milisecondes");
+                System.out.println("Documents créés avec succès");
             }
         } catch (Exception e) {
             System.out.println("Error creating document: " + e.getMessage());

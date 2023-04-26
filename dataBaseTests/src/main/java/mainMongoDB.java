@@ -127,17 +127,17 @@ public class mainMongoDB {
 
 
             } else if (choix == 3) {
-                System.out.println("\n========================================================");
-                System.out.println("==                  Menu Update                       ==");
-                System.out.println("========================================================\n");
-                System.out.println("========= Veuillez choisir une option : ===============");
-                System.out.println("||                                                     ||");
-                System.out.println("|| 1 - Modifier un document qui a la valeur 'Human'    ||");
-                System.out.println("|| 2 - Modifier tous les documents qui possèdent 'Human||");
-                System.out.println("|| 3 - Supprimer tous les documents d'une collection   ||");
-                System.out.println("|| 4 - Quitter le menu UPDATE                          ||");
-                System.out.println("||                                                     ||");
-                System.out.println("========================================================");
+                System.out.println("\n=====================================================================");
+                System.out.println("==                        Menu Update                              ==");
+                System.out.println("=====================================================================\n");
+                System.out.println("================ Veuillez choisir une option : =====================");
+                System.out.println("||                                                                ||");
+                System.out.println("|| 1 - Modifier un document qui a la valeur 'Human'               ||");
+                System.out.println("|| 2 - Modifier tous les documents qui possèdent la valeur 'Human'||");
+                System.out.println("|| 3 - Modifier un champ de tous les documents d'une collection   ||");
+                System.out.println("|| 4 - Quitter le menu UPDATE                                     ||");
+                System.out.println("||                                                                ||");
+                System.out.println("====================================================================");
                 System.out.print("\nVotre choix : ");
 
                 int choixUpdate = sc.nextInt();
@@ -253,11 +253,15 @@ public class mainMongoDB {
                 }
 
             } else if (choix == 5) {
-                System.out.println("Vous avez choisi de quitter le programme");
+                System.out.println("\n========================================================");
+                System.out.println("|| Vous avez choisi de quitter le programme. Au revoir!||");
+                System.out.println("========================================================");
                 System.exit(0);
 
             } else {
-                System.out.println("Veuillez entrer un nombre entre 1 et 5");
+                System.out.println("\n============================================");
+                System.out.println("|| Veuillez entrer un nombre entre 1 et 5 ||");
+                System.out.println("============================================");
             }
         }
 

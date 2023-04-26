@@ -71,6 +71,7 @@ public class CREATEMongoDB {
                 // Insert the document into the collection with the current date
                 instanceDeConnection.getDatabase().getCollection(collectionName).insertOne(new Document("date", date)
                         .append("hour", now.toString().substring(11, 19))
+                                .append("nameOfFile", filePath.substring(filePath.lastIndexOf("\\") + 1))
                         .append("metadata", document)
                 );
             }
@@ -116,11 +117,9 @@ public class CREATEMongoDB {
                     System.err.println("Aucun fichier XML trouvé dans le dossier");
                     return;
                 }
-
-                int compteur2 = 0;
+                System.out.println("Traitement en cours...");
                 // Parcourir chaque fichier XML
                 for (File file : listOfFiles) {
-                    compteur2++;
                     // Lire le contenu du fichier
                     String xmlContent = new String(Files.readAllBytes(Paths.get(file.getAbsolutePath())));
 
@@ -133,6 +132,7 @@ public class CREATEMongoDB {
                     // Insérer le document dans la collection
                     instanceDeConnection.getDatabase().getCollection(collectionName).insertOne(new Document("date", date)
                             .append("hour", now.toString().substring(11, 19))
+                            .append("nameOfFile", file.getName())
                             .append("metadata", document)
                     );
                 }

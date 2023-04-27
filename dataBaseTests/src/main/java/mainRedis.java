@@ -1,3 +1,4 @@
+import ConnectionBD.ConnectionRedis;
 import RedisCRUD.CREATERedis;
 import RedisCRUD.DELETERedis;
 import RedisCRUD.READRedis;
@@ -9,7 +10,21 @@ import java.util.Scanner;
 public class mainRedis {
 
     public static void main(String[] args) {
+        System.out.println("=========================================================");
+        System.out.println("|| Tentative de connexion à la base de données Redis   ||");
+        System.out.println("=========================================================\n");
+        //Vérifie que la connexion à Redis est bien établie
+        if (ConnectionRedis.getInstance().getConnection() != null) {
+            System.out.println("Connexion à la base de données Redis réussie");
+        } else {
+            System.out.println("Connexion à la base de données Redis échouée veuillez vérfier que docker est bien lancé");
+            return;
+        }
+
+
         while (true) {
+
+
             System.out.println("\n========================================================");
             System.out.println("|| Programme de test de la base de données Redis      ||");
             System.out.println("========================================================\n");

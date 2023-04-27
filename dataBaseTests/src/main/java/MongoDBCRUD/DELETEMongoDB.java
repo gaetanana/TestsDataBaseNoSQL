@@ -18,6 +18,11 @@ public class DELETEMongoDB {
 
     private static final ConnectionMongoDB instanceDeConnection = ConnectionMongoDB.getInstance();
 
+    /**
+     * Le bout de code commenté ci-dessous permet de supprimer les documents plus vieux que 10 minutes
+     * il faut le mettre dans une fonction main pour le tester.
+     */
+
     /*
        ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
         Runnable deleteOldDocuments = () -> deleteDocumentsOlderThanTenMinutes("testCollection");

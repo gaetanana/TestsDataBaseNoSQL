@@ -320,7 +320,7 @@ public class mainMongoDB {
                         if (nomCollection.equals("ECHAP")) {
                             break;
                         }
-                        System.out.println("La collection n'existe pas, veuillez entrer un nom de collection valide : ");
+                        System.out.println("La collection n'existe pas, veuillez entrer un nom de collection valide ou tapez ECHAP pour revenir au menu principal : ");
                         nomCollection = sc.next();
                     }
                     if (nomCollection.equals("ECHAP")) {
@@ -428,19 +428,19 @@ public class mainMongoDB {
                         if (nomCollection.equals("ECHAP")) {
                             break;
                         }
-                        System.out.println("La collection n'existe pas, veuillez entrer un nom de collection valide : ");
+                        System.out.println("La collection n'existe pas, veuillez entrer un nom de collection valide ou tapez ECHAP pour revenir au menu principal : ");
                         nomCollection = sc.next();
                     }
                     if (nomCollection.equals("ECHAP")) {
                         continue;
                     }
-                    System.out.println("Veuillez entrer l'id du document ou tapez sur ECHAP pour quitter : ");
+                    System.out.println("Veuillez entrer l'id du document ou tapez ECHAP pour revenir au menu principal : ");
                     String idDocument = sc.next();
                     while (READMongoDB.idExists(nomCollection, idDocument) == false) {
                         if (idDocument.equals("ECHAP")) {
                             break;
                         }
-                        System.out.println("L'id n'existe pas, veuillez entrer un id valide : ");
+                        System.out.println("L'id n'existe pas, veuillez entrer un id valide ou tapez ECHAP pour revenir au menu principal : ");
                         idDocument = sc.next();
                     }
                     if (idDocument.equals("ECHAP")) {
@@ -461,7 +461,7 @@ public class mainMongoDB {
                         if (nomCollection.equals("ECHAP")) {
                             break;
                         }
-                        System.out.println("La collection n'existe pas, veuillez entrer un nom de collection valide : ");
+                        System.out.println("La collection n'existe pas, veuillez entrer un nom de collection valide ou tapez ECHAP pour revenir au menu principal : ");
                         nomCollection = sc.next();
                     }
                     if (nomCollection.equals("ECHAP")) {
@@ -469,16 +469,16 @@ public class mainMongoDB {
                     }
                     DELETEMongoDB.deleteAllDocumentsInOneCollection(nomCollection);
                 } else if (choixDelete == 4) {
-                    System.out.println("Vous avez choisi de quitter le menu Delete");
+                    System.out.println("=============================================================");
+                    System.out.println("||       Vous avez choisi de quitter le menu Delete        ||");
+                    System.out.println("=============================================================");
                     continue;
                 }
-
             } else if (choix == 5) {
                 System.out.println("\n========================================================");
                 System.out.println("|| Vous avez choisi de quitter le programme. Au revoir!||");
                 System.out.println("========================================================");
                 System.exit(0);
-
             } else {
                 System.out.println("\n============================================");
                 System.out.println("|| Veuillez entrer un nombre entre 1 et 5 ||");

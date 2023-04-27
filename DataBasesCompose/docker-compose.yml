@@ -33,10 +33,19 @@ services:
     volumes:
       - elasticsearch_data:/usr/share/elasticsearch/data
 
-
+  couchdb:
+    image: couchdb:3.2.0
+    container_name: couchdb
+    ports:
+      - "5984:5984"
+    environment:
+      - COUCHDB_USER=admin
+      - COUCHDB_PASSWORD=password
+    volumes:
+      - couchdb_data:/opt/couchdb/data
 
 volumes:
   dbdata6:
   redis_data:
   elasticsearch_data:
-
+  couchdb_data:

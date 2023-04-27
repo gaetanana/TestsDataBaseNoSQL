@@ -8,11 +8,8 @@ import org.bson.conversions.Bson;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+import com.mongodb.client.result.DeleteResult;
 
-import java.util.Collection;
 
 public class DELETEMongoDB {
 
@@ -76,13 +73,21 @@ public class DELETEMongoDB {
      * Cette méthode permet de supprimer tous les documents d'une collection spécifié
      */
     public static void deleteAllDocumentsInOneCollection(String collectionName) {
+        //Temps initial
+        long startTime = System.currentTimeMillis();
         boolean exist = READMongoDB.collectionExists(collectionName);
         if (!exist) {
             System.out.println("Collection " + collectionName + " not exists");
             return;
         } else {
-            instanceDeConnection.getDatabase().getCollection(collectionName).deleteMany(new org.bson.Document());
-            System.out.println("All documents from " + collectionName + " deleted successfully");
+            DeleteResult deleteResult = instanceDeConnection.getDatabase().getCollection(collectionName).deleteMany(new org.bson.Document());
+            System.out.println("Tous les documents de  " + collectionName + " ont étaient supprimés avec succès");
+            //Temps final
+            long endTime = System.currentTimeMillis();
+            //Temps d'exécution
+            long timeElapsed = endTime - startTime;
+            System.out.println("Temps d'exécution en millisecondes: " + timeElapsed);
+            System.out.println("Nombre de documents supprimés: " + deleteResult.getDeletedCount());
         }
     }
 

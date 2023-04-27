@@ -395,7 +395,19 @@ public class mainMongoDB {
                 System.out.println("|| 4 - Quitter le menu Delete                         ||");
                 System.out.println("||                                                    ||");
                 System.out.println("========================================================");
-                int choixDelete = sc.nextInt();
+
+                boolean validInputDelete = false;
+                int choixDelete = 0;
+                do {
+                    System.out.println("Votre choix : ");
+                    try {
+                        choixDelete = sc.nextInt();
+                        validInputDelete = true;
+                    } catch (Exception e) {
+                        System.out.println("Veuillez entrer un choix valide : ");
+                        sc.next();
+                    }
+                }while (!validInputDelete);
 
                 if (choixDelete == 1) {
                     System.out.println("=============================================================");
@@ -454,7 +466,7 @@ public class mainMongoDB {
                     System.out.println("||       d'une collection                                  ||");
                     System.out.println("=============================================================");
 
-
+                    System.out.println("Veuillez entrer le nom de la collection ou tapez ECHAP pour revenir au menu principal : ");
                     String nomCollection = sc.next();
 
                     while (READMongoDB.collectionExists(nomCollection) == false) {

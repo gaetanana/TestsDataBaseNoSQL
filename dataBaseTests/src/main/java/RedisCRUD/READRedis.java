@@ -7,6 +7,8 @@ import redis.clients.jedis.ScanParams;
 import redis.clients.jedis.ScanResult;
 
 import java.io.IOException;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.List;
 
 public class READRedis {
@@ -29,12 +31,16 @@ public class READRedis {
         }
     }
 
-    /**
-     * Cette fonction permet de retrouver toutes les clés dans Redis
-     */
     public static void readAllKey() {
+        //Temps de traitement
+        Instant start = Instant.now();
+
         int compteurCle = 0;
+        Jedis jedisConnection = null;
         try {
+            // Obtenez une nouvelle connexion à Redis
+            jedisConnection = ConnectionRedis.getRedisConnection();
+
             // Récupère toutes les clés
             ScanParams scanParams = new ScanParams();
             scanParams.match("*");
@@ -42,7 +48,7 @@ public class READRedis {
             String cursor = ScanParams.SCAN_POINTER_START;
             ScanResult<String> scanResult;
             do {
-                scanResult = instanceDeConnection.getConnection().scan(cursor, scanParams);
+                scanResult = jedisConnection.scan(cursor, scanParams);
                 for (String key : scanResult.getResult()) {
                     compteurCle++;
                     System.out.println(key);
@@ -50,18 +56,26 @@ public class READRedis {
                 cursor = scanResult.getCursor();
             } while (!cursor.equals(ScanParams.SCAN_POINTER_START));
         } finally {
+            Instant finish = Instant.now();
+            long timeElapsed = Duration.between(start, finish).toMillis();
+            System.out.println("Temps de traitement : " + timeElapsed + " ms");
             System.out.println("Nombre de clés dans la base de données  : " + compteurCle);
-            // Ferme la connexion à Redis
-            if (instanceDeConnection.getConnection() != null) {
-                instanceDeConnection.getConnection().close();
+
+            // Fermez la connexion
+            if (jedisConnection != null) {
+                jedisConnection.close();
             }
         }
     }
+
 
     /**
      * Cette fonction permet de retrouver toutes les clés dans Redis qui contiennent un objet de type "Human"
      */
     public static void readAllKeyWithHuman() {
+        //Temps de traitement
+        Instant start = Instant.now();
+
         int compteurCle = 0;
         ObjectMapper objectMapper = new ObjectMapper();
 
@@ -95,6 +109,9 @@ public class READRedis {
                 cursor = scanResult.getCursor();
             } while (!cursor.equals(ScanParams.SCAN_POINTER_START));
         } finally {
+            Instant finish = Instant.now();
+            long timeElapsed = Duration.between(start, finish).toMillis();
+            System.out.println("Temps de traitement : " + timeElapsed + " ms");
             System.out.println("Nombre de clés avec le contenu 'Human' : " + compteurCle);
         }
     }
@@ -104,6 +121,8 @@ public class READRedis {
      * et un Likelihood supérieur à 0.5
      */
     public static void getHumanWithProbability() {
+        //Temps de traitement
+        Instant start = Instant.now();
         int compteurCle = 0;
         ObjectMapper objectMapper = new ObjectMapper();
 
@@ -138,6 +157,9 @@ public class READRedis {
                 cursor = scanResult.getCursor();
             } while (!cursor.equals(ScanParams.SCAN_POINTER_START));
         } finally {
+            Instant finish = Instant.now();
+            long timeElapsed = Duration.between(start, finish).toMillis();
+            System.out.println("Temps de traitement : " + timeElapsed + " ms");
             System.out.println("Nombre de clés avec le contenu 'Human' : " + compteurCle);
         }
     }
@@ -160,6 +182,16 @@ public class READRedis {
                 instanceDeConnection.getConnection().close();
             }
         }
+    }
+
+
+
+
+    public static void main(String[] args){
+        readAllKey();
+        System.out.println("--------------------------------------------------");
+        readAllKey();
+
     }
 
 

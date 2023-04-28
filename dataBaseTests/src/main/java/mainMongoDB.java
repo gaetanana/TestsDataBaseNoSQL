@@ -2,6 +2,7 @@ import java.io.IOException;
 import java.util.Scanner;
 
 import ConnectionBD.ConnectionMongoDB;
+import ConnectionBD.ConnectionRedis;
 import MongoDBCRUD.*;
 
 public class mainMongoDB {
@@ -337,9 +338,9 @@ public class mainMongoDB {
                     System.out.println("=============================================================");
 
                     System.out.println();
-                    System.out.println("-----------------------------------------------------------------------------------------------------------------------------------------");
-                    System.out.println("|!!! Attention si dans la collection il y a des documents qui possèdent plusieurs champs avec le même nom, seulement le premier champ !!!|");
-                    System.out.println("-----------------------------------------------------------------------------------------------------------------------------------------");
+                    System.out.println("-------------------------------------------------------------------------------------------------------------------------------------------------------");
+                    System.out.println("|!!! Attention si dans la collection il y a des documents qui possèdent plusieurs champs avec le même nom, seulement le premier champ sera modifié !!!|");
+                    System.out.println("-------------------------------------------------------------------------------------------------------------------------------------------------------");
 
 
                     System.out.println("Veuillez entrer le nom de la collection ou tapez ECHAP pour revenir au menu principal : ");
@@ -490,6 +491,8 @@ public class mainMongoDB {
                 System.out.println("\n========================================================");
                 System.out.println("|| Vous avez choisi de quitter le programme. Au revoir!||");
                 System.out.println("========================================================");
+                ConnectionMongoDB.fermetConnexion();
+                ConnectionRedis.fermetConnexion();
                 System.exit(0);
             } else {
                 System.out.println("\n============================================");

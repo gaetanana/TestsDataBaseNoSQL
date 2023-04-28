@@ -4,6 +4,10 @@ import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
 public class ConnectionRedis {
 
     private static ConnectionRedis instance;
@@ -41,6 +45,35 @@ public class ConnectionRedis {
     public void closeConnection(Jedis jedis) {
         if (jedis != null) {
             jedis.close();
+        }
+    }
+
+    public static boolean isDockerRunning() {
+        try {
+            Process process = Runtime.getRuntime().exec("docker ps");
+            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            String line;
+            while ((line = reader.readLine()) != null) {
+                if (line.contains("redis")) {
+                    return true;
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public static Jedis getRedisConnection() {
+        String host = "localhost";
+        int port = 6379;
+
+        return new Jedis(host, port);
+    }
+
+    public static void fermetConnexion() {
+        if (instance != null) {
+            instance.jedisPool.close();
         }
     }
 }

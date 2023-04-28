@@ -83,6 +83,7 @@ public class UPDATERedis {
         int keysModified = 0;
         int valuesModified = 0;
 
+        System.out.println("Traitement en cours...");
         for (String key : instanceDeConnection.getConnection().keys("*")) {
             String jsonString = instanceDeConnection.getConnection().get(key);
             if (jsonString != null) {
@@ -143,6 +144,7 @@ public class UPDATERedis {
         Instant start = Instant.now();
         int keysModified = 0;
         int valuesModified = 0;
+        System.out.println("Traitement en cours...");
 
         for (String key : instanceDeConnection.getConnection().keys("*")) {
             String jsonString = instanceDeConnection.getConnection().get(key);

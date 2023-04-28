@@ -53,7 +53,7 @@ public class ConnectionMongoDB {
             BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
             String line;
             while ((line = reader.readLine()) != null) {
-                if (line.contains("mongo")) {
+                if (line.contains("mongodb")) {
                     return true;
                 }
             }
@@ -62,5 +62,13 @@ public class ConnectionMongoDB {
         }
         return false;
     }
+
+    public static void fermetConnexion() {
+        if (Objects.nonNull(instance)) {
+            instance.mongoClient.close();
+        }
+    }
+
+
 
 }

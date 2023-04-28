@@ -36,19 +36,28 @@ public class READMongoDB {
      * @param collectionName
      */
     public static void readCollection(String collectionName) {
+        //Temps de début
+        Instant startTime = Instant.now();
         MongoIterable<String> collectionsNames = instanceDeConnection.getDatabase().listCollectionNames();
+        int nbFichiers = 0;
         //Je vérifie si la collection existe
         for (String name : collectionsNames) {
-            //
+
             if (name.equals(collectionName)) {
                 MongoCollection<Document> collection = instanceDeConnection.getDatabase().getCollection(collectionName);
                 //J'affiche tous les documents de la collection
                 for (Document document : collection.find()) {
+                    nbFichiers++;
                     System.out.println(document);
                 }
+                //Temps de fin
+                Instant endTime = Instant.now();
+                //Calcul du temps d'exécution
+                Duration timeElapsed = Duration.between(startTime, endTime);
+                System.out.println("Temps d'exécution en millisecondes : " + timeElapsed.toMillis());
+                System.out.println("Nombre de fichiers : " + nbFichiers);
                 return;
             }
-
         }
         System.err.println("Collection " + collectionName + " does not exist");
     }
@@ -83,7 +92,7 @@ public class READMongoDB {
         // Calcule la durée totale
         Duration duration = Duration.between(startTime, endTime);
         System.out.println("Requête du nombre de documents dans la collection " + collectionName + " dont le type est Human");
-        System.out.println("Durée totale : " + duration.toMillis() + " secondes");
+        System.out.println("Durée totale : " + duration.toMillis() + " milisecondes");
         System.out.println("Nombre de résultats: " + nbResult);
     }
 
@@ -119,18 +128,21 @@ public class READMongoDB {
         // Calcule la durée totale
         Duration duration = Duration.between(startTime, endTime);
         System.out.println("Requête du nombre de documents dans la collection " + collectionName + " avec une probabilité supérieur à 0.5 et dont le type est Human");
-        System.out.println("Durée totale : " + duration.toMillis() + " secondes");
+        System.out.println("Durée totale : " + duration.toMillis() + " milisecondes");
         System.out.println("Nombre de résultats: " + nbResult);
     }
 
     /**
      * Cette fonction permet de retrouver tous les documents d'une collection en donnant une date.
+     * Pas encore fonctionnelle
      */
     public static void getDocumentsWithDate(String nomCollection, String date) {
 
     }
 
 
+    //En bas ce sont des méthodes auxiliaires
+    //------------------------------------------------------------------------------------------------------------------
     /**
      * Cette méthode me permet de savoir si une collection existe
      *
@@ -205,7 +217,4 @@ public class READMongoDB {
         return false;
     }
 
-    public static void main(String[] args){
-        System.out.println(fieldExists("testCollection","xmlns"));
-    }
 }

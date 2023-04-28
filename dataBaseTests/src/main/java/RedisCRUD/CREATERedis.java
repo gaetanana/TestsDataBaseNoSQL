@@ -61,11 +61,6 @@ public class CREATERedis {
             System.out.println("Contenu JSON stocké dans Redis : \n" + storedContent);
         } catch (IOException e) {
             System.err.println("Erreur lors de la lecture du fichier XML : " + e.getMessage());
-        } finally {
-            // Ferme la connexion à Redis
-            if (instanceDeConnection.getConnection() != null) {
-                instanceDeConnection.getConnection().close();
-            }
         }
     }
 
@@ -88,7 +83,7 @@ public class CREATERedis {
 
         DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
         Jedis jedis = new Jedis();
-
+        System.out.println("Traitement des fichiers XML en cours...");
         for (File file : listOfFiles) {
             if (file.isFile() && file.getName().endsWith(".xml")) {
                 compteurFichier++;

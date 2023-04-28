@@ -44,12 +44,12 @@ public class UPDATEMongoDB {
             if ("Human".equals(content)) {
                 type.put("content", newContentValue);
                 collection.replaceOne(filter, document);
-                System.out.println("Document updated successfully");
+                System.out.println("Document mise à jour avec succès");
             } else {
-                System.out.println("Document not updated. The content is not 'Human'");
+                System.out.println("Document non mis à jour car le content type n'est pas 'Human'");
             }
         } else {
-            System.out.println("Document not found");
+            System.out.println("Document pas trouvé");
         }
     }
 
@@ -59,6 +59,9 @@ public class UPDATEMongoDB {
      * Si il dans un document il y a plusieurs fois le même champ en paramètre, seulement le premier sera mis à jour.
      */
     public static void updateMultipleHumanDocuments(String nomCollection, String newContentValue) {
+        //Temps de début de la mise à jour
+        Instant start = Instant.now();
+
         MongoCollection<Document> collection = instanceDeConnection.getDatabase().getCollection(nomCollection);
 
         // Récupérer tous les documents
@@ -120,7 +123,11 @@ public class UPDATEMongoDB {
                 }
             }
         }
-
+        //Temps de fin de la mise à jour
+        Instant end = Instant.now();
+        //Calcule la durée totale de la mise à jour
+        Duration timeElapsed = Duration.between(start, end);
+        System.out.println("Temps écoulé: " + timeElapsed.toMillis() + " millisecondes");
         System.out.println("Nombre de documents mis à jour: " + updatedDocumentsCount);
     }
 
@@ -135,6 +142,7 @@ public class UPDATEMongoDB {
         AtomicInteger compteurDocument = new AtomicInteger();
 
         MongoCollection<Document> collection = instanceDeConnection.getDatabase().getCollection(nomCollection);
+        System.out.println("Traitement de la collection: " + nomCollection + " en cours...");
 
         collection.find().forEach((Block<? super Document>) document -> {
             Document metadata = document.get("metadata", Document.class);
@@ -149,9 +157,8 @@ public class UPDATEMongoDB {
         Instant endTime = Instant.now();
         // Calcule la durée totale
         Duration duration = Duration.between(startTime, endTime);
-        System.out.println("Nombre de documents mis à jour: " + compteurDocument.get());
         System.out.println("Durée totale: " + duration.toMillis() + " ms");
-
+        System.out.println("Nombre de documents mis à jour: " + compteurDocument.get());
         System.out.println("Champ mis à jour avec succès");
     }
 

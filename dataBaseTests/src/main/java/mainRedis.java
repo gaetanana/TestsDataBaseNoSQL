@@ -14,7 +14,7 @@ public class mainRedis {
         System.out.println("|| Tentative de connexion à la base de données Redis   ||");
         System.out.println("=========================================================\n");
         //Vérifie que la connexion à Redis est bien établie
-        if (ConnectionRedis.getInstance().getConnection() != null) {
+        if (ConnectionRedis.getInstance().getConnection() != null && ConnectionRedis.isDockerRunning()) {
             System.out.println("Connexion à la base de données Redis réussie");
         } else {
             System.out.println("Connexion à la base de données Redis échouée veuillez vérfier que docker est bien lancé");
@@ -141,17 +141,21 @@ public class mainRedis {
 
                     System.out.println("Veuillez entrer le nom de la clé, ou tapez ECHAP pour quitter : ");
                     String nomCle = sc.next();
+                    if (nomCle.equals("ECHAP")) {
+                        continue;
+                    }
 
                     while (!READRedis.readOneKeyExist(nomCle)) {
+                        if (nomCle.equals("ECHAP")) {
+                            break;
+                        }
                         System.out.println("Veuillez entrer le nom de la clé, ou tapez ECHAP pour quitter : ");
                         nomCle = sc.next();
                         if (READRedis.readOneKeyExist(nomCle)) {
                             nomCleCorrecte = true;
                             break;
                         }
-                        if (nomCle.equals("ECHAP")) {
-                            break;
-                        }
+
                     }
                     if (nomCle.equals("ECHAP")) {
                         continue;

@@ -144,27 +144,14 @@ public class mainRedis {
                     if (nomCle.equals("ECHAP")) {
                         continue;
                     }
-
-                    while (!READRedis.readOneKeyExist(nomCle)) {
-                        if (nomCle.equals("ECHAP")) {
-                            break;
-                        }
-                        System.out.println("Veuillez entrer le nom de la clé, ou tapez ECHAP pour quitter : ");
+                    else if(READRedis.readOneKeyExist(nomCle) == false){
+                        System.out.println("La clé n'existe pas, veuillez entrer un autre nom de clé : ");
                         nomCle = sc.next();
-                        if (READRedis.readOneKeyExist(nomCle)) {
-                            nomCleCorrecte = true;
-                            break;
+                        if (nomCle.equals("ECHAP")) {
+                            continue;
                         }
-
-                    }
-                    if (nomCle.equals("ECHAP")) {
-                        continue;
-                    }
-
-                    if (nomCleCorrecte) {
+                    } else if (READRedis.readOneKeyExist(nomCle) == true) {
                         READRedis.readOneKeyValue(nomCle);
-                    } else {
-                        continue;
                     }
 
                 } else if (choixRead == 2) {
@@ -194,7 +181,6 @@ public class mainRedis {
 
                     continue;
                 }
-
             } else if (choix == 3) {
                 System.out.println("\n=======================================================================");
                 System.out.println("||                          Menu Update                              ||");
@@ -206,9 +192,9 @@ public class mainRedis {
                 System.out.println("|| 3 - Modifie toutes les valeurs des clés                           ||");
                 System.out.println("||     pour remplacer 'Human' par une autre valeur                   ||");
                 System.out.println("|| 4 - Modifie toutes les valeurs des clés pour remplacer le content ||");
-                System.out.println("||     par une auttre valeur                                         ||");
+                System.out.println("||     par une autre valeur                                          ||");
                 System.out.println("|| 5 - Quitter le menu Update                                        ||");
-                System.out.println("========================================================================");
+                System.out.println("=======================================================================");
                 System.out.print("\nVotre choix : ");
                 int choixUpdate = sc.nextInt();
                 if (choixUpdate == 1) {
@@ -264,10 +250,10 @@ public class mainRedis {
                     }
                     UPDATERedis.updateAllKeyJSONWithValueHuman(valeurCle);
                 } else if (choixUpdate == 4) {
-                    System.out.println("=======================================================================");
-                    System.out.println("|| Vous avez choisi de modifier toutes les valeurs des clés pour     ||");
-                    System.out.println("|| remplacer le content par une autre valeur                         ||");
-                    System.out.println("=======================================================================");
+                    System.out.println("===========================================================================");
+                    System.out.println("|| Vous avez choisi de modifier toutes les valeurs des clés pour         ||");
+                    System.out.println("|| remplacer le content par une autre valeur (généralement c'est Human)  ||");
+                    System.out.println("===========================================================================");
 
                     System.out.println("Veuillez entrer la nouvelle valeur ou tapez ECHAP pour revenir au menu principal : ");
                     String valeurCle = sc.next();

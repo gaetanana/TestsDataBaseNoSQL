@@ -21,14 +21,13 @@ public class DELETERedis {
                 return;
             }
             // Supprime la clé spécifiée
-            ConnectionRedis.getInstance().getConnection().del(nameKey);
+            ConnectionRedis.getRedisConnection().del(nameKey);
             System.out.println("La clé a été supprimée");
         } finally {
-            // Ferme la connexion à Redis
-            if (ConnectionRedis.getInstance().getConnection() != null) {
-                ConnectionRedis.getInstance().getConnection().close();
-            }
-        }
+            ConnectionRedis.getRedisConnection();
+            ConnectionRedis.getRedisConnection().close();
+
+                    }
     }
 
     /**
@@ -36,16 +35,31 @@ public class DELETERedis {
      */
 
     public static void deleteAllKey() {
-        try {
+        // Temps de début de la suppression
+        long start = System.currentTimeMillis();
+        int cleSupprimee = 0;
+
+        try (Jedis jedis = ConnectionRedis.getInstance().getConnection()) {
+            // Obtient la taille de la base de données avant la suppression
+            long initialSize = jedis.dbSize();
+
             // Supprime toutes les clés
-            ConnectionRedis.getInstance().getConnection().flushAll();
+            jedis.flushAll();
             System.out.println("Toutes les clés ont été supprimées");
-        } finally {
-            // Ferme la connexion à Redis
-            if (ConnectionRedis.getInstance().getConnection() != null) {
-                ConnectionRedis.getInstance().getConnection().close();
-            }
+
+            // Obtient la taille de la base de données après la suppression
+            long finalSize = jedis.dbSize();
+
+            // Calcule le nombre de clés supprimées
+            cleSupprimee = (int) (initialSize - finalSize);
         }
+
+        // Temps de fin de la suppression
+        long end = System.currentTimeMillis();
+        // Temps total de la suppression
+        long time = end - start;
+        System.out.println("Temps de suppression : " + time + " ms");
+        System.out.println("Nombre de clés supprimées : " + cleSupprimee);
     }
 
     /**
@@ -55,7 +69,7 @@ public class DELETERedis {
 
         int numberOfKeysToDelete = 50;
 
-        try (Jedis jedis = ConnectionRedis.getInstance().getConnection()) {
+        try (Jedis jedis = ConnectionRedis.getRedisConnection()) {
             // Récupère les 50 dernières clés
             ScanParams scanParams = new ScanParams().count(numberOfKeysToDelete);
             ScanResult<String> scanResult = jedis.scan("0", scanParams);
@@ -64,12 +78,13 @@ public class DELETERedis {
             for (String key : scanResult.getResult()) {
                 jedis.del(key);
             }
-
             System.out.println("Les 50 dernières clés ont été supprimées");
             System.out.println("Maintenant il reste " + jedis.dbSize() + " clés dans la base de données");
         } catch (Exception e) {
             System.err.println("Erreur lors de la suppression des clés : " + e.getMessage());
         }
+        ConnectionRedis.getRedisConnection();
+        ConnectionRedis.getRedisConnection().close();
     }
 
 }

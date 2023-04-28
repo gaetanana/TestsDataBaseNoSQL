@@ -30,13 +30,12 @@ public class UPDATERedis {
                 return;
             }
             // Modifie la valeur de la clé spécifiée
-            ConnectionRedis.getInstance().getConnection().set(nameKey, newValue);
+            ConnectionRedis.getRedisConnection().set(nameKey, newValue);
             System.out.println("La valeur de la clé a été modifiée");
         } finally {
             // Ferme la connexion à Redis
-            if (ConnectionRedis.getInstance().getConnection() != null) {
-                ConnectionRedis.getInstance().getConnection().close();
-            }
+            ConnectionRedis.getRedisConnection();
+            ConnectionRedis.getRedisConnection().close();
         }
     }
 
@@ -45,7 +44,7 @@ public class UPDATERedis {
      * Conversion du fichier XML en JSON puis modification de la valeur de la clé.
      */
     public static void updateOneKeyJSON(String nameKey, String pathFileXML) {
-        Jedis jedis = ConnectionRedis.getInstance().getConnection();
+
 
         try {
             // Vérifie que la clé existe
@@ -61,15 +60,14 @@ public class UPDATERedis {
             JSONObject jsonValue = XML.toJSONObject(content);
 
             // Modifie la valeur de la clé spécifiée avec le JSON
-            jedis.set(nameKey, jsonValue.toString());
+            ConnectionRedis.getRedisConnection().set(nameKey, jsonValue.toString());
             System.out.println("La valeur de la clé a été modifiée");
         } catch (IOException e) {
             System.out.println("Erreur lors de la lecture du fichier XML : " + e.getMessage());
         } finally {
             // Ferme la connexion à Redis
-            if (jedis != null) {
-                jedis.close();
-            }
+            ConnectionRedis.getRedisConnection();
+            ConnectionRedis.getRedisConnection().close();
         }
     }
 
@@ -84,18 +82,20 @@ public class UPDATERedis {
         int valuesModified = 0;
 
         System.out.println("Traitement en cours...");
-        for (String key : instanceDeConnection.getConnection().keys("*")) {
-            String jsonString = instanceDeConnection.getConnection().get(key);
-            if (jsonString != null) {
-                JSONObject jsonObject = new JSONObject(jsonString);
-                int previousValuesModified = valuesModified;
-                valuesModified += replaceHumanRecursive(jsonObject, newValue);
+        try (Jedis jedis = ConnectionRedis.getInstance().getConnection()) {
+            for (String key : jedis.keys("*")) {
+                String jsonString = jedis.get(key);
+                if (jsonString != null) {
+                    JSONObject jsonObject = new JSONObject(jsonString);
+                    int previousValuesModified = valuesModified;
+                    valuesModified += replaceHumanRecursive(jsonObject, newValue);
 
-                if (valuesModified > previousValuesModified) {
-                    keysModified++;
+                    if (valuesModified > previousValuesModified) {
+                        keysModified++;
+                    }
+
+                    jedis.set(key, jsonObject.toString(2));
                 }
-
-                instanceDeConnection.getConnection().set(key, jsonObject.toString(2));
             }
         }
 
@@ -103,7 +103,10 @@ public class UPDATERedis {
         System.out.println("Temps d'exécution : " + Duration.between(start, end).toMillis() + " ms");
         System.out.println("Nombre de clés modifiées : " + keysModified);
         System.out.println("Nombre de valeurs modifiées : " + valuesModified);
+        // Ferme la connexion à Redis
+        ConnectionRedis.fermetConnexion();
     }
+
 
     private static int replaceHumanRecursive(Object obj, String newValue) {
         int valuesModified = 0;
@@ -131,40 +134,39 @@ public class UPDATERedis {
                 }
             }
         }
-
         return valuesModified;
     }
 
 
-    /**
-     * Cette fonction permet de modifier toutes les valeurs des clés Redis.
-     * En fonction du contenu dans le fichier JSON, change la valeur actuelle de content par la valeur en paramètre.
-     */
     public static void updateAllKeyJSONWithValue(String newValue) {
         Instant start = Instant.now();
         int keysModified = 0;
         int valuesModified = 0;
         System.out.println("Traitement en cours...");
 
-        for (String key : instanceDeConnection.getConnection().keys("*")) {
-            String jsonString = instanceDeConnection.getConnection().get(key);
-            if (jsonString != null) {
-                JSONObject jsonObject = new JSONObject(jsonString);
-                int previousValuesModified = valuesModified;
-                valuesModified += updateContentRecursive(jsonObject, newValue);
+        try (Jedis jedis = ConnectionRedis.getInstance().getConnection()) {
+            for (String key : jedis.keys("*")) {
+                String jsonString = jedis.get(key);
+                if (jsonString != null) {
+                    JSONObject jsonObject = new JSONObject(jsonString);
+                    int previousValuesModified = valuesModified;
+                    valuesModified += updateContentRecursive(jsonObject, newValue);
 
-                if (valuesModified > previousValuesModified) {
-                    keysModified++;
+                    if (valuesModified > previousValuesModified) {
+                        keysModified++;
+                    }
+
+                    jedis.set(key, jsonObject.toString(2));
                 }
-
-                instanceDeConnection.getConnection().set(key, jsonObject.toString(2));
             }
         }
+
         Instant end = Instant.now();
         System.out.println("Temps d'exécution : " + Duration.between(start, end).toMillis() + " ms");
         System.out.println("Nombre de clés modifiées : " + keysModified);
         System.out.println("Nombre de valeurs modifiées : " + valuesModified);
     }
+
 
     private static int updateContentRecursive(Object obj, String newValue) {
         int valuesModified = 0;

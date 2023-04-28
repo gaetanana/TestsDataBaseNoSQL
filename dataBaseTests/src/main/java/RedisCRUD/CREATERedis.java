@@ -82,20 +82,17 @@ public class CREATERedis {
         File[] listOfFiles = folder.listFiles();
 
         DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
-        Jedis jedis = new Jedis();
+
         System.out.println("Traitement des fichiers XML en cours...");
         for (File file : listOfFiles) {
             if (file.isFile() && file.getName().endsWith(".xml")) {
                 compteurFichier++;
-                try {
-                    DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
-                    Document document = documentBuilder.parse(file);
+                try (Jedis jedis = ConnectionRedis.getInstance().getConnection()) {
                     String content = new String(Files.readAllBytes(Paths.get(file.getPath())));
                     JSONObject jsonObject = XML.toJSONObject(content);
                     String key = file.getName().substring(0, file.getName().length() - 4);
-
                     jedis.set(key, jsonObject.toString());
-                } catch (ParserConfigurationException | SAXException | IOException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }

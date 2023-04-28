@@ -33,3 +33,22 @@ Les fichiers .jar sont dans le dossier **/TestsDataBaseNoSQL/ApplicationsJar**.
 Pour les lancer il faut ouvrir un terminal dans le dossier **/TestsDataBaseNoSQL/ApplicationsJar** et lancer la commande suivante :
 
 ```bash java -jar nomDuFichier.jar```
+
+--------------------
+
+## Cas d'utilisation
+
+
+
+### Lancez les bases de données
+
+
+**Etape 1** : Lancez une console en administrateur dans le dossier **/TestsDataBaseNoSQL/DataBaseCompose**.
+
+![imgConsole1.png](imgREADME%2FimgConsole1.png)
+
+**Etape 2** : Lancez le fichier docker-compose.yml pour lancer les bases de données.
+
+
+
+### MongoDB

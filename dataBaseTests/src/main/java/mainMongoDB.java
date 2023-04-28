@@ -310,7 +310,8 @@ public class mainMongoDB {
                     System.out.println("Veuillez entrer la nouvelle valeur ou tapez ECHAP pour revenir au menu principal : ");
                     String newValue = sc.next();
                     UPDATEMongoDB.updateOneHumanDocument(nomCollection, id, newValue);
-                } else if (choix == 2) {
+                }
+                else if (choixUpdate == 2) {
                     System.out.println("=============================================================");
                     System.out.println("||       Vous avez choisi de modifier tous les documents    ||");
                     System.out.println("||       qui possèdent la valeur 'Human'                    ||");
@@ -331,7 +332,8 @@ public class mainMongoDB {
                     String newValue = sc.next();
                     UPDATEMongoDB.updateMultipleHumanDocuments(nomCollection, newValue);
 
-                } else if (choix == 3) {
+                }
+                else if (choixUpdate == 3) {
                     System.out.println("=============================================================");
                     System.out.println("||       Vous avez choisi de modifier un champ de tous      ||");
                     System.out.println("||       les documents d'une collection                     ||");
@@ -449,6 +451,9 @@ public class mainMongoDB {
                     }
                     System.out.println("Veuillez entrer l'id du document ou tapez ECHAP pour revenir au menu principal : ");
                     String idDocument = sc.next();
+                    if(idDocument.equals("ECHAP")){
+                        continue;
+                    }
                     while (READMongoDB.idExists(nomCollection, idDocument) == false) {
                         if (idDocument.equals("ECHAP")) {
                             break;

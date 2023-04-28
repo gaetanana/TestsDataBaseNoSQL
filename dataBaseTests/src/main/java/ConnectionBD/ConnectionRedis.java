@@ -23,8 +23,10 @@ public class ConnectionRedis {
         jedisPoolConfig.setMaxIdle(5);
         jedisPoolConfig.setTestOnBorrow(true);
         jedisPoolConfig.setTestOnReturn(true);
-        jedisPool = new JedisPool(jedisPoolConfig, HOST, PORT);
+        int timeout = 10000; // Augmenter cette valeur si nécessaire
+        jedisPool = new JedisPool(jedisPoolConfig, HOST, PORT, timeout);
     }
+
 
     public static ConnectionRedis getInstance() {
         if (instance == null) {

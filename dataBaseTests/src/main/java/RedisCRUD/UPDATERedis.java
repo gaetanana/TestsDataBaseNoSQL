@@ -168,9 +168,15 @@ public class UPDATERedis {
     }
 
 
+    /**
+     * Permet de modifier la valeur de la clé spécifiée par la valeur en paramètre.
+     * @param obj
+     * @param newValue
+     * @return
+     */
+
     private static int updateContentRecursive(Object obj, String newValue) {
         int valuesModified = 0;
-
         if (obj instanceof JSONObject) {
             JSONObject jsonObject = (JSONObject) obj;
             if (jsonObject.has("tt:Class")) {
@@ -198,12 +204,8 @@ public class UPDATERedis {
                 }
             }
         }
-
         return valuesModified;
     }
-
-
-
 }
 
 

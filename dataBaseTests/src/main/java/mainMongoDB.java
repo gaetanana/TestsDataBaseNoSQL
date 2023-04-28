@@ -10,7 +10,7 @@ public class mainMongoDB {
         System.out.println("|| Tentative de connexion à la base de données MongoDB ||");
         System.out.println("=========================================================\n");
         //Vérifie si la connexion à la base de données est réussie
-        if (ConnectionMongoDB.getInstance().getDatabase() != null) {
+        if (ConnectionMongoDB.getInstance().getDatabase() != null && ConnectionMongoDB.isDockerRunning()) {
             System.out.println("Connexion à la base de données réussie");
         } else {
             System.err.println("Erreur lors de la connexion à la base de données, veuillez vérifier les paramètres de connexion ou que docker est bien lancé");

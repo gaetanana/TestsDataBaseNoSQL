@@ -49,3 +49,4 @@ volumes:
   redis_data:
   elasticsearch_data:
   couchdb_data:
+  oracle_nosql_data:

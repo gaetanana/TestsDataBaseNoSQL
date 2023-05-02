@@ -1,22 +1,18 @@
 package MongoDBCRUD;
 
 import ConnectionBD.ConnectionMongoDB;
-import com.mongodb.client.MongoCollection;
 import org.bson.Document;
 import org.json.JSONObject;
 import org.json.XML;
-
 import java.io.File;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
-import java.util.Objects;
-
 import java.time.Instant;
 import java.time.Duration;
+import java.lang.management.ManagementFactory;
+import java.lang.management.OperatingSystemMXBean;
+import java.lang.management.ThreadMXBean;
 
 import static ConnectionBD.ConnectionMongoDB.getInstance;
 
@@ -94,6 +90,13 @@ public class CREATEMongoDB {
         LocalDateTime now = LocalDateTime.now();
         //Récupère la date actuelle
         String date = now.toString().substring(0, 10);
+
+        // Mesure de l'utilisation du processeur et de la mémoire avant l'exécution de la fonction
+        OperatingSystemMXBean osBean = ManagementFactory.getOperatingSystemMXBean();
+        ThreadMXBean threadBean = ManagementFactory.getThreadMXBean();
+        long cpuBefore = threadBean.getCurrentThreadCpuTime();
+        long beforeUsedMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
+
         try {
             boolean exist = READMongoDB.collectionExists(collectionName);
             if (!exist) {
@@ -144,6 +147,20 @@ public class CREATEMongoDB {
                 System.out.println("Nombre de fichier: " + compteur);
                 System.out.println("Durée totale : " + duration.toMillis() + " milisecondes");
                 System.out.println("Documents créés avec succès");
+
+                // Mesure de l'utilisation du processeur et de la mémoire après l'exécution de la fonction
+                long cpuAfter = threadBean.getCurrentThreadCpuTime();
+                long afterUsedMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
+
+                // Calcule l'utilisation moyenne du processeur et de la mémoire
+                long cpuUsed = cpuAfter - cpuBefore;
+                long memoryUsed = afterUsedMemory - beforeUsedMemory;
+                double cpuPercentage = (double) cpuUsed / (duration.toMillis() * 1000000) * 100;
+
+                // Afficher les résultats
+                System.out.println("Utilisation moyenne du processeur : " + cpuPercentage + "%");
+                System.out.println("Mémoire utilisée : " + memoryUsed + " octets");
+
             }
         } catch (Exception e) {
             System.out.println("Error creating document: " + e.getMessage());

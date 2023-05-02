@@ -59,7 +59,7 @@ public class READMongoDB {
                 return;
             }
         }
-        System.err.println("Collection " + collectionName + " does not exist");
+        System.err.println("Collection " + collectionName + " n'existe pas");
     }
 
 

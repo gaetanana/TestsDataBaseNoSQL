@@ -13,8 +13,9 @@ public class mainRedis {
         System.out.println("=========================================================");
         System.out.println("|| Tentative de connexion à la base de données Redis   ||");
         System.out.println("=========================================================\n");
+
         //Vérifie que la connexion à Redis est bien établie
-        if (ConnectionRedis.getInstance().getConnection() != null && ConnectionRedis.isDockerRunning()) {
+        if (ConnectionRedis.isDockerRunning()) {
             System.out.println("Connexion à la base de données Redis réussie");
         } else {
             System.out.println("Connexion à la base de données Redis échouée veuillez vérfier que docker est bien lancé");

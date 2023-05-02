@@ -13,7 +13,6 @@ import java.util.List;
 
 public class READRedis {
 
-    private static final ConnectionRedis instanceDeConnection = ConnectionRedis.getInstance();
 
     /**
      * Cette fonction permet de retrouver la valeur d'une clé dans Redis
@@ -21,12 +20,11 @@ public class READRedis {
     public static void readOneKeyValue(String nameKey) {
         try {
             // Récupère la valeur de la clé spécifiée
-            String storedContent = ConnectionRedis.getRedisConnection().get(nameKey);
+            String storedContent = ConnectionRedis.getConnection().get(nameKey);
             System.out.println("Contenu JSON stocké dans Redis : \n" + storedContent);
         } finally {
-            // Ferme la connexion à Redis
-            ConnectionRedis.getRedisConnection();
-            ConnectionRedis.getRedisConnection().close();
+            // Ferme la connexion à Redis;
+            ConnectionRedis.getConnection().close();
         }
     }
 
@@ -38,7 +36,7 @@ public class READRedis {
         Jedis jedisConnection = null;
         try {
             // Obtenez une nouvelle connexion à Redis
-            jedisConnection = ConnectionRedis.getRedisConnection();
+            jedisConnection = ConnectionRedis.getConnection();
 
             // Récupère toutes les clés
             ScanParams scanParams = new ScanParams();
@@ -76,7 +74,7 @@ public class READRedis {
         int compteurCle = 0;
         ObjectMapper objectMapper = new ObjectMapper();
 
-        try (Jedis jedis = ConnectionRedis.getRedisConnection()) {
+        try (Jedis jedis = ConnectionRedis.getConnection()) {
             // Récupère toutes les clés
             ScanParams scanParams = new ScanParams();
             scanParams.match("*");
@@ -122,7 +120,7 @@ public class READRedis {
         int compteurCle = 0;
         ObjectMapper objectMapper = new ObjectMapper();
 
-        try (Jedis jedis = ConnectionRedis.getRedisConnection()) {
+        try (Jedis jedis = ConnectionRedis.getConnection()) {
             // Récupère toutes les clés
             ScanParams scanParams = new ScanParams();
             scanParams.match("*");
@@ -166,7 +164,7 @@ public class READRedis {
     public static boolean readOneKeyExist(String nameKey) {
         try {
             // Récupère la valeur de la clé spécifiée
-            String storedContent =ConnectionRedis.getRedisConnection().get(nameKey);
+            String storedContent =ConnectionRedis.getConnection().get(nameKey);
             if (storedContent == null) {
                 return false;
             } else {
@@ -174,8 +172,7 @@ public class READRedis {
             }
         } finally {
             // Ferme la connexion à Redis
-            ConnectionRedis.getRedisConnection();
-            ConnectionRedis.getRedisConnection().close();
+            ConnectionRedis.getConnection().close();
         }
     }
 

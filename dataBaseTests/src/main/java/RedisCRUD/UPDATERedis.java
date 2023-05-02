@@ -17,7 +17,6 @@ import java.util.Set;
 
 public class UPDATERedis {
 
-    private static final ConnectionRedis instanceDeConnection = ConnectionRedis.getInstance();
 
     /**
      * Cette fonction permet de modifier une valeur d'une clé dans Redis
@@ -30,12 +29,11 @@ public class UPDATERedis {
                 return;
             }
             // Modifie la valeur de la clé spécifiée
-            ConnectionRedis.getRedisConnection().set(nameKey, newValue);
+            ConnectionRedis.getConnection().set(nameKey, newValue);
             System.out.println("La valeur de la clé a été modifiée");
         } finally {
             // Ferme la connexion à Redis
-            ConnectionRedis.getRedisConnection();
-            ConnectionRedis.getRedisConnection().close();
+            ConnectionRedis.getConnection().close();
         }
     }
 
@@ -60,14 +58,13 @@ public class UPDATERedis {
             JSONObject jsonValue = XML.toJSONObject(content);
 
             // Modifie la valeur de la clé spécifiée avec le JSON
-            ConnectionRedis.getRedisConnection().set(nameKey, jsonValue.toString());
+            ConnectionRedis.getConnection().set(nameKey, jsonValue.toString());
             System.out.println("La valeur de la clé a été modifiée");
         } catch (IOException e) {
             System.out.println("Erreur lors de la lecture du fichier XML : " + e.getMessage());
         } finally {
             // Ferme la connexion à Redis
-            ConnectionRedis.getRedisConnection();
-            ConnectionRedis.getRedisConnection().close();
+            ConnectionRedis.getConnection().close();
         }
     }
 
@@ -82,7 +79,7 @@ public class UPDATERedis {
         int valuesModified = 0;
 
         System.out.println("Traitement en cours...");
-        try (Jedis jedis = ConnectionRedis.getInstance().getConnection()) {
+        try (Jedis jedis = ConnectionRedis.getConnection()) {
             for (String key : jedis.keys("*")) {
                 String jsonString = jedis.get(key);
                 if (jsonString != null) {
@@ -104,7 +101,7 @@ public class UPDATERedis {
         System.out.println("Nombre de clés modifiées : " + keysModified);
         System.out.println("Nombre de valeurs modifiées : " + valuesModified);
         // Ferme la connexion à Redis
-        ConnectionRedis.fermetConnexion();
+        ConnectionRedis.getConnection().close();
     }
 
 
@@ -144,7 +141,7 @@ public class UPDATERedis {
         int valuesModified = 0;
         System.out.println("Traitement en cours...");
 
-        try (Jedis jedis = ConnectionRedis.getInstance().getConnection()) {
+        try (Jedis jedis = ConnectionRedis.getConnection()) {
             for (String key : jedis.keys("*")) {
                 String jsonString = jedis.get(key);
                 if (jsonString != null) {

@@ -497,7 +497,7 @@ public class mainMongoDB {
                 System.out.println("|| Vous avez choisi de quitter le programme. Au revoir!||");
                 System.out.println("========================================================");
                 ConnectionMongoDB.fermetConnexion();
-                ConnectionRedis.getConnection().close();
+                ConnectionRedis.getInstance().getConnection().close();
                 System.exit(0);
             } else {
                 System.out.println("\n============================================");

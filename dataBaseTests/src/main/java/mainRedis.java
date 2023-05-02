@@ -9,7 +9,7 @@ import java.util.Scanner;
 
 public class mainRedis {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
         System.out.println("=========================================================");
         System.out.println("|| Tentative de connexion à la base de données Redis   ||");
         System.out.println("=========================================================\n");

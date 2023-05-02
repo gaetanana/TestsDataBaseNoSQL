@@ -7,9 +7,21 @@ import java.nio.channels.FileChannel;
 public class generateurDeFichierXML {
 
     public static void main(String[] args) {
-        String sourceFilePath = "C:\\Users\\g.gonfiantini\\Desktop\\data\\FichiersXML\\FichiersXML104295\\Onvif_Metadata_C1000_2023-04-27_16-31-18.695.xml"; // Modifier avec le chemin absolu du fichier XML source
-        String destinationFolderPath = "C:\\Users\\g.gonfiantini\\Desktop\\data\\FichiersXML\\FichierXMLLourd\\"; // Modifier avec le chemin absolu du dossier de destination
-        int numberOfCopies = 10000; // Modifier avec le nombre de copies souhaité
+
+        //Chemin absolu du fichier XML source chez moi
+        //C:\Users\Gaetan\OneDrive - umontpellier.fr\Stage-projets\data\Onvif_Metadata_C1000_2023-04-27_11-49-56.464.xml
+        //Chemin absolu du dossier de destination chez moi
+        //C:\Users\Gaetan\OneDrive - umontpellier.fr\Stage-projets\data\FichierXMLLourd
+
+        //Chemin absolu du fichier XML source chez Actia
+        //
+        //Chemin absolu du dossier de destination chez Actia
+        //
+
+
+        String sourceFilePath = "C:\\Users\\Gaetan\\OneDrive - umontpellier.fr\\Stage-projets\\data\\Onvif_Metadata_C1000_2023-04-27_11-49-56.464.xml"; // Modifier avec le chemin absolu du fichier XML source
+        String destinationFolderPath = "C:\\FichierXMLLourd"; // Modifier avec le chemin absolu du dossier de destination
+        int numberOfCopies = 500000; // Modifier avec le nombre de copies souhaité
 
         File sourceFile = new File(sourceFilePath);
         File destinationFolder = new File(destinationFolderPath);

@@ -1,9 +1,9 @@
 package RedisCRUD;
 
 import ConnectionBD.ConnectionRedis;
+import redis.clients.jedis.Jedis;
 import org.json.JSONObject;
 import org.json.XML;
-import redis.clients.jedis.Jedis;
 
 import java.io.File;
 import java.io.IOException;
@@ -26,14 +26,14 @@ public class CREATERedis {
      */
     public static void createOneKeyValue(String nameKey, String pathFileOfXML) {
         try {
-            ConnectionRedis connectionRedis = new ConnectionRedis();
+            ConnectionRedis redisConnection = ConnectionRedis.getInstance();
             // Lis le contenu du fichier XML et le convertis en chaîne de caractères
             String fileContent = new String(Files.readAllBytes(Paths.get(pathFileOfXML)));
             // Convertis le contenu XML en objet JSON
             JSONObject jsonObject = XML.toJSONObject(fileContent);
 
             // Insère le contenu JSON dans Redis sous la clé spécifiée
-            try (Jedis jedis = connectionRedis.getConnection()) {
+            try (Jedis jedis = redisConnection.getConnection()) {
                 jedis.set(nameKey, jsonObject.toString());
 
                 // Vérifie que le contenu a bien été inséré
@@ -51,7 +51,7 @@ public class CREATERedis {
      *
      * @param pathFolderOfXML
      */
-    public static void createAllKeyValue(String pathFolderOfXML) {
+    public static void createAllKeyValue(String pathFolderOfXML) throws InterruptedException {
         Instant startTime = Instant.now();
         int compteurFichier = 0;
 
@@ -59,17 +59,20 @@ public class CREATERedis {
         File[] listOfFiles = folder.listFiles();
 
         // Crée un ThreadPool avec un nombre fixe de threads
-        int numberOfThreads = 10; // Ajustez cette valeur en fonction de vos besoins
+        int numberOfThreads = 10;
+
+
         ExecutorService executorService = Executors.newFixedThreadPool(numberOfThreads);
 
-        ConnectionRedis connectionRedis = new ConnectionRedis();
+        ConnectionRedis redisConnection = ConnectionRedis.getInstance();
 
         System.out.println("Traitement des fichiers XML en cours...");
         for (File file : listOfFiles) {
             if (file.isFile() && file.getName().endsWith(".xml")) {
                 compteurFichier++;
+                Thread.sleep(50); // 50 ms de pause
                 executorService.submit(() -> {
-                    try (Jedis jedis = connectionRedis.getConnection()) {
+                    try (Jedis jedis = redisConnection.getConnection()) {
                         String content = new String(Files.readAllBytes(Paths.get(file.getPath())));
                         JSONObject jsonObject = XML.toJSONObject(content);
                         String key = file.getName().substring(0, file.getName().length() - 4);

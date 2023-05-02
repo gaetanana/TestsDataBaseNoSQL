@@ -8,7 +8,8 @@ import redis.clients.jedis.ScanResult;
 public class DELETERedis {
 
     public static void deleteOneKey(String nameKey) {
-        try (Jedis jedis = ConnectionRedis.getConnection()) {
+        ConnectionRedis redisConnection = ConnectionRedis.getInstance();
+        try (Jedis jedis = redisConnection.getConnection()) {
             if (!READRedis.readOneKeyExist(nameKey)) {
                 System.out.println("La clé n'existe pas");
                 return;
@@ -22,7 +23,8 @@ public class DELETERedis {
         long start = System.currentTimeMillis();
         int cleSupprimee = 0;
 
-        try (Jedis jedis = ConnectionRedis.getConnection()) {
+        ConnectionRedis redisConnection = ConnectionRedis.getInstance();
+        try (Jedis jedis = redisConnection.getConnection()) {
             long initialSize = jedis.dbSize();
             jedis.flushAll();
             System.out.println("Toutes les clés ont été supprimées");
@@ -39,7 +41,8 @@ public class DELETERedis {
     public static void delete50LastKey() {
         int numberOfKeysToDelete = 50;
 
-        try (Jedis jedis = ConnectionRedis.getConnection()) {
+        ConnectionRedis redisConnection = ConnectionRedis.getInstance();
+        try (Jedis jedis = redisConnection.getConnection()) {
             ScanParams scanParams = new ScanParams().count(numberOfKeysToDelete);
             ScanResult<String> scanResult = jedis.scan("0", scanParams);
             for (String key : scanResult.getResult()) {

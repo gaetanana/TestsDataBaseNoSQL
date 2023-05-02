@@ -10,37 +10,49 @@ import java.io.InputStreamReader;
 
 public class ConnectionRedis {
 
+    // Instance unique de la classe
+    private static ConnectionRedis instance;
+
+    // Pool de connexion Jedis
     private static JedisPool jedisPool;
 
-    private static final String HOST = "localhost";
-    private static final int PORT = 6379;
+    // Informations de connexion
+    private static final String REDIS_HOST = "localhost";
+    private static final int REDIS_PORT = 6379;
+    private static final int TIMEOUT = 6000;
 
-    static {
-        JedisPoolConfig jedisPoolConfig = new JedisPoolConfig();
-        jedisPoolConfig.setMaxTotal(10);
-        jedisPoolConfig.setMinIdle(2);
-        jedisPoolConfig.setMaxIdle(5);
-        jedisPoolConfig.setTestOnBorrow(true);
-        jedisPoolConfig.setTestOnReturn(true);
-        int timeout = 60000;
-        jedisPool = new JedisPool(jedisPoolConfig, HOST, PORT, timeout);
+    // Constructeur privé pour empêcher la création d'instances multiples
+    private ConnectionRedis() {
+        JedisPoolConfig poolConfig = new JedisPoolConfig();
+        poolConfig.setMaxTotal(256);
+        poolConfig.setMaxIdle(64);
+        poolConfig.setMinIdle(32);
+        poolConfig.setTestOnBorrow(true);
+        poolConfig.setTestOnReturn(true);
+        poolConfig.setTestWhileIdle(true);
+        jedisPool = new JedisPool(poolConfig, REDIS_HOST, REDIS_PORT, TIMEOUT);
     }
 
-    public static Jedis getConnection() {
+    // Méthode pour obtenir l'instance unique de la classe
+    public static synchronized ConnectionRedis getInstance() {
+        if (instance == null) {
+            instance = new ConnectionRedis();
+        }
+        return instance;
+    }
+
+    // Méthode pour obtenir une connexion Jedis
+    public Jedis getConnection() {
         return jedisPool.getResource();
     }
 
-    public static void closeConnection(Jedis jedis) {
+    // Méthode pour fermer une connexion Jedis
+    public void closeConnection(Jedis jedis) {
         if (jedis != null) {
             jedis.close();
         }
     }
 
-    public static void closeJedisPool() {
-        if (jedisPool != null) {
-            jedisPool.close();
-        }
-    }
     public static boolean isDockerRunning() {
         try {
             Process process = Runtime.getRuntime().exec("docker ps");

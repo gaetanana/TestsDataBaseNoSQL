@@ -18,13 +18,10 @@ public class READRedis {
      * Cette fonction permet de retrouver la valeur d'une clé dans Redis
      */
     public static void readOneKeyValue(String nameKey) {
-        try {
-            // Récupère la valeur de la clé spécifiée
-            String storedContent = ConnectionRedis.getConnection().get(nameKey);
+        ConnectionRedis redisConnection = ConnectionRedis.getInstance();
+        try (Jedis jedis = redisConnection.getConnection()) {
+            String storedContent = jedis.get(nameKey);
             System.out.println("Contenu JSON stocké dans Redis : \n" + storedContent);
-        } finally {
-            // Ferme la connexion à Redis;
-            ConnectionRedis.getConnection().close();
         }
     }
 
@@ -33,10 +30,8 @@ public class READRedis {
         Instant start = Instant.now();
 
         int compteurCle = 0;
-        Jedis jedisConnection = null;
-        try {
-            // Obtenez une nouvelle connexion à Redis
-            jedisConnection = ConnectionRedis.getConnection();
+        ConnectionRedis redisConnection = ConnectionRedis.getInstance();
+        try (Jedis jedis = redisConnection.getConnection()) {
 
             // Récupère toutes les clés
             ScanParams scanParams = new ScanParams();
@@ -45,7 +40,7 @@ public class READRedis {
             String cursor = ScanParams.SCAN_POINTER_START;
             ScanResult<String> scanResult;
             do {
-                scanResult = jedisConnection.scan(cursor, scanParams);
+                scanResult = jedis.scan(cursor, scanParams);
                 for (String key : scanResult.getResult()) {
                     compteurCle++;
                     System.out.println(key);
@@ -59,8 +54,8 @@ public class READRedis {
             System.out.println("Nombre de clés dans la base de données  : " + compteurCle);
 
             // Fermez la connexion
-            if (jedisConnection != null) {
-                jedisConnection.close();
+            if (redisConnection != null) {
+                redisConnection.getConnection().close();
             }
         }
     }
@@ -74,7 +69,8 @@ public class READRedis {
         int compteurCle = 0;
         ObjectMapper objectMapper = new ObjectMapper();
 
-        try (Jedis jedis = ConnectionRedis.getConnection()) {
+        ConnectionRedis redisConnection = ConnectionRedis.getInstance();
+        try (Jedis jedis = redisConnection.getConnection()) {
             // Récupère toutes les clés
             ScanParams scanParams = new ScanParams();
             scanParams.match("*");
@@ -120,7 +116,9 @@ public class READRedis {
         int compteurCle = 0;
         ObjectMapper objectMapper = new ObjectMapper();
 
-        try (Jedis jedis = ConnectionRedis.getConnection()) {
+
+        ConnectionRedis redisConnection = ConnectionRedis.getInstance();
+        try (Jedis jedis = redisConnection.getConnection()) {
             // Récupère toutes les clés
             ScanParams scanParams = new ScanParams();
             scanParams.match("*");
@@ -161,30 +159,26 @@ public class READRedis {
     /**
      * Cette fonction permet de savoir si une clé existe dans la base de données Redis
      */
+    /**
+     * Cette fonction permet de savoir si une clé existe dans la base de données Redis
+     */
     public static boolean readOneKeyExist(String nameKey) {
-        try {
+        ConnectionRedis redisConnection = ConnectionRedis.getInstance();
+        try (Jedis jedis = redisConnection.getConnection()) {
             // Récupère la valeur de la clé spécifiée
-            String storedContent =ConnectionRedis.getConnection().get(nameKey);
+            String storedContent = jedis.get(nameKey);
             if (storedContent == null) {
                 return false;
             } else {
                 return true;
             }
-        } finally {
-            // Ferme la connexion à Redis
-            ConnectionRedis.getConnection().close();
         }
     }
 
 
 
 
-    public static void main(String[] args){
-        readAllKey();
-        System.out.println("--------------------------------------------------");
-        readAllKey();
 
-    }
 
 
 }

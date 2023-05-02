@@ -156,10 +156,12 @@ public class CREATEMongoDB {
                 long cpuUsed = cpuAfter - cpuBefore;
                 long memoryUsed = afterUsedMemory - beforeUsedMemory;
                 double cpuPercentage = (double) cpuUsed / (duration.toMillis() * 1000000) * 100;
+                double memoryPercentage = (double) memoryUsed / Runtime.getRuntime().maxMemory() * 100;
 
                 // Afficher les résultats
                 System.out.println("Utilisation moyenne du processeur : " + cpuPercentage + "%");
                 System.out.println("Mémoire utilisée : " + memoryUsed + " octets");
+                System.out.println("Pourcentage de la mémoire utilisée : " + memoryPercentage + "%");
 
             }
         } catch (Exception e) {

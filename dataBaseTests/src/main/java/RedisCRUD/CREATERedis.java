@@ -70,7 +70,7 @@ public class CREATERedis {
         for (File file : listOfFiles) {
             if (file.isFile() && file.getName().endsWith(".xml")) {
                 compteurFichier++;
-                Thread.sleep(50); // 50 ms de pause
+                //Thread.sleep(50); // 50 ms de pause
                 executorService.submit(() -> {
                     try (Jedis jedis = redisConnection.getConnection()) {
                         String content = new String(Files.readAllBytes(Paths.get(file.getPath())));

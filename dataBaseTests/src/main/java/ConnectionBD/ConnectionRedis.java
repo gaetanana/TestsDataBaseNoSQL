@@ -19,7 +19,7 @@ public class ConnectionRedis {
     // Informations de connexion
     private static final String REDIS_HOST = "localhost";
     private static final int REDIS_PORT = 6379;
-    private static final int TIMEOUT = 6000;
+    private static final int TIMEOUT = 0;
 
     // Constructeur privé pour empêcher la création d'instances multiples
     private ConnectionRedis() {

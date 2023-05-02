@@ -1,28 +1,37 @@
 package ConnectionBD;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import com.cloudant.client.api.ClientBuilder;
+import com.cloudant.client.api.CloudantClient;
 
-public class ConnectionCouchDB
-{
+//Cette classe permet de se connecter à la base de données actiaDataBase CouchDB
+public class ConnectionCouchDB {
 
+    private static ConnectionCouchDB instance;
+    private CloudantClient cloudantClient;
 
-
-
-    public static boolean isDockerRunning() {
+    private ConnectionCouchDB() {
         try {
-            Process process = Runtime.getRuntime().exec("docker ps");
-            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-            String line;
-            while ((line = reader.readLine()) != null) {
-                if (line.contains("couchdb")) {
-                    return true;
-                }
-            }
-        } catch (IOException e) {
+            cloudantClient = ClientBuilder.account("admin")
+                    .username("admin")
+                    .password("password")
+                    .build();
+        } catch (Exception e) {
             e.printStackTrace();
         }
-        return false;
+    }
+
+    public static ConnectionCouchDB getInstance() {
+        if (instance == null) {
+            synchronized (ConnectionCouchDB.class) {
+                if (instance == null) {
+                    instance = new ConnectionCouchDB();
+                }
+            }
+        }
+        return instance;
+    }
+
+    public CloudantClient getCloudantClient() {
+        return cloudantClient;
     }
 }

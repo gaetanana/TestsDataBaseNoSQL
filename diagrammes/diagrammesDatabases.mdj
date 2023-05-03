@@ -89,7 +89,7 @@
 											"top": 543,
 											"width": 150,
 											"height": 13,
-											"text": "mainMongoDB"
+											"text": "Applications.mainMongoDB"
 										},
 										{
 											"_type": "LabelView",
@@ -3630,7 +3630,7 @@
 					"_parent": {
 						"$ref": "AAAAAAGHuOXYYDRrqnM="
 					},
-					"name": "mainMongoDB",
+					"name": "Applications.mainMongoDB",
 					"operations": [
 						{
 							"_type": "UMLOperation",
@@ -5497,7 +5497,7 @@
 											"top": 719,
 											"width": 174,
 											"height": 13,
-											"text": "mainRedis"
+											"text": "Applications.mainRedis"
 										},
 										{
 											"_type": "LabelView",
@@ -8662,7 +8662,7 @@
 					"_parent": {
 						"$ref": "AAAAAAGHuPfqW/RWCWc="
 					},
-					"name": "mainRedis",
+					"name": "Applications.mainRedis",
 					"operations": [
 						{
 							"_type": "UMLOperation",

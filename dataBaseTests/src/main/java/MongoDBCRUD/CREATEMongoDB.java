@@ -4,6 +4,9 @@ import ConnectionBD.ConnectionMongoDB;
 import org.bson.Document;
 import org.json.JSONObject;
 import org.json.XML;
+import oshi.software.os.OSProcess;
+import oshi.software.os.OperatingSystem;
+
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -23,6 +26,7 @@ public class CREATEMongoDB {
 
     /**
      * Cette méthode permet de créer une collection dans la base de données
+     *
      * @param collectionName
      */
     public static void createCollection(String collectionName) {
@@ -67,7 +71,7 @@ public class CREATEMongoDB {
                 // Insert the document into the collection with the current date
                 instanceDeConnection.getDatabase().getCollection(collectionName).insertOne(new Document("date", date)
                         .append("hour", now.toString().substring(11, 19))
-                                .append("nameOfFile", filePath.substring(filePath.lastIndexOf("\\") + 1))
+                        .append("nameOfFile", filePath.substring(filePath.lastIndexOf("\\") + 1))
                         .append("metadata", document)
                 );
             }
@@ -84,19 +88,29 @@ public class CREATEMongoDB {
      * il les convertit en JSON et les insère dans la collection avec l'heure actuelle ainsie que la date.
      */
     public static void creationPlusieursDocuments(String collectionName, String chemingDuDossier) {
-        // Enregistre l'heure de début
-        Instant startTime = Instant.now();
-        //Récupère l'heure actuelle
-        LocalDateTime now = LocalDateTime.now();
-        //Récupère la date actuelle
-        String date = now.toString().substring(0, 10);
+        //------------------------ Initialisation --------------------------------
+        Instant startTime = Instant.now(); // Enregistre l'heure de début
+        LocalDateTime now = LocalDateTime.now(); // Récupère l'heure actuelle
+        String date = now.toString().substring(0, 10); // Récupère la date actuelle
 
-        // Mesure de l'utilisation du processeur et de la mémoire avant l'exécution de la fonction
-        OperatingSystemMXBean osBean = ManagementFactory.getOperatingSystemMXBean();
+        //Partie processeur
         ThreadMXBean threadBean = ManagementFactory.getThreadMXBean();
         long cpuBefore = threadBean.getCurrentThreadCpuTime();
+
+        //Partie mémoire vive
         long beforeUsedMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
 
+        //Partie disque physique
+        oshi.SystemInfo systemInfo = new oshi.SystemInfo();
+        OperatingSystem os = systemInfo.getOperatingSystem();
+        OSProcess currentProcess = os.getProcess(os.getProcessId());
+
+        // Avant l'exécution de la fonction
+        long bytesReadBefore = currentProcess.getBytesRead();
+        long bytesWrittenBefore = currentProcess.getBytesWritten();
+        long startTimeDisque = System.nanoTime();
+
+        //------------------------ Début du traitement ------------------------
         try {
             boolean exist = READMongoDB.collectionExists(collectionName);
             if (!exist) {
@@ -139,35 +153,55 @@ public class CREATEMongoDB {
                             .append("metadata", document)
                     );
                 }
-                // Enregistre l'heure de fin
-                Instant endTime = Instant.now();
-                // Calcule la durée totale
-                Duration duration = Duration.between(startTime, endTime);
 
-                System.out.println("Nombre de fichier: " + compteur);
-                System.out.println("Durée totale : " + duration.toMillis() + " milisecondes");
-                System.out.println("Documents créés avec succès");
+                //------------------------ Affichage des informations ------------------------
 
-                // Mesure de l'utilisation du processeur et de la mémoire après l'exécution de la fonction
+                Instant endTime = Instant.now(); // Enregistre l'heure de fin
+                Duration duration = Duration.between(startTime, endTime); // Calcule la durée totale
+
+
+                //Partie processeur
                 long cpuAfter = threadBean.getCurrentThreadCpuTime();
-                long afterUsedMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
-
-                // Calcule l'utilisation moyenne du processeur et de la mémoire
                 long cpuUsed = cpuAfter - cpuBefore;
-                long memoryUsed = afterUsedMemory - beforeUsedMemory;
                 double cpuPercentage = (double) cpuUsed / (duration.toMillis() * 1000000) * 100;
+
+                //Partie mémoire vive
+                long afterUsedMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
+                long memoryUsed = afterUsedMemory - beforeUsedMemory;
                 double memoryPercentage = (double) memoryUsed / Runtime.getRuntime().maxMemory() * 100;
 
-                // Afficher les résultats
+                //Partie disque physique
+                currentProcess = os.getProcess(os.getProcessId()); // Mettre à jour les informations du processus
+                long bytesReadAfter = currentProcess.getBytesRead();
+                long bytesWrittenAfter = currentProcess.getBytesWritten();
+                long endTimeDisque = System.nanoTime();
+
+                // Calculez la différence d'utilisation du disque
+                long bytesReadDifference = bytesReadAfter - bytesReadBefore;
+                long bytesWrittenDifference = bytesWrittenAfter - bytesWrittenBefore;
+                long elapsedTime = endTimeDisque - startTimeDisque;
+
+                double bytesReadPerSecond = (double) bytesReadDifference / (elapsedTime / 1_000_000_000.0);
+                double bytesWrittenPerSecond = (double) bytesWrittenDifference / (elapsedTime / 1_000_000_000.0);
+
+
+                System.out.println("Nombre de fichier: " + compteur + " insérés dans la collection " + collectionName);
+                System.out.println("Durée totale : " + duration.toMillis() + " milisecondes");
                 System.out.println("Utilisation moyenne du processeur : " + cpuPercentage + "%");
-                System.out.println("Mémoire utilisée : " + memoryUsed + " octets");
                 System.out.println("Pourcentage de la mémoire utilisée : " + memoryPercentage + "%");
+                System.out.println("Taux de lecture : " + bytesReadPerSecond + " octets/s");
+                System.out.println("Taux d'écriture : " + bytesWrittenPerSecond + " octets/s");
+
+                System.out.println("Documents créés avec succès");
+
 
             }
         } catch (Exception e) {
             System.out.println("Error creating document: " + e.getMessage());
         }
     }
+
+
 
 
 }

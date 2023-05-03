@@ -7,7 +7,11 @@ import org.bson.Document;
 import org.bson.types.ObjectId;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import oshi.software.os.OSProcess;
+import oshi.software.os.OperatingSystem;
 
+import java.lang.management.ManagementFactory;
+import java.lang.management.ThreadMXBean;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
@@ -73,16 +77,32 @@ public class UPDATEMongoDB {
     }
 
 
-
-
-
     /**
      * Cette fonction permet de mettre à jour tous les documents qui ont un content type "Human" avec une nouvelle valeur qui remplace "Human".
      * Si il dans un document il y a plusieurs fois le même champ en paramètre, seulement le premier sera mis à jour.
      */
 
     public static void updateMultipleHumanDocuments(String nomCollection, String newContentValue) {
-        Instant start = Instant.now();
+        //------------------------ Initialisation --------------------------------
+        Instant startTime = Instant.now(); // Enregistre l'heure de début
+
+        //Partie processeur
+        ThreadMXBean threadBean = ManagementFactory.getThreadMXBean();
+        long cpuBefore = threadBean.getCurrentThreadCpuTime();
+
+        //Partie mémoire vive
+        long beforeUsedMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
+
+        //Partie disque physique
+        oshi.SystemInfo systemInfo = new oshi.SystemInfo();
+        OperatingSystem os = systemInfo.getOperatingSystem();
+        OSProcess currentProcess = os.getProcess(os.getProcessId());
+
+        long bytesReadBefore = currentProcess.getBytesRead();
+        long bytesWrittenBefore = currentProcess.getBytesWritten();
+        long startTimeDisque = System.nanoTime();
+
+        //------------------------ Début mise à jour ----------------------------
 
         MongoCollection<Document> collection = instanceDeConnection.getDatabase().getCollection(nomCollection);
 
@@ -103,10 +123,43 @@ public class UPDATEMongoDB {
             }
         }
 
-        Instant end = Instant.now();
-        Duration timeElapsed = Duration.between(start, end);
-        System.out.println("Temps écoulé: " + timeElapsed.toMillis() + " millisecondes");
-        System.out.println("Nombre de documents mis à jour: " + updatedDocumentsCount);
+        //------------------------ Fin mise à jour ------------------------------
+
+        Instant endTime = Instant.now(); // Enregistre l'heure de fin
+        Duration duration = Duration.between(startTime, endTime); // Calcule la durée totale
+
+
+        //Partie processeur
+        long cpuAfter = threadBean.getCurrentThreadCpuTime();
+        long cpuUsed = cpuAfter - cpuBefore;
+        double cpuPercentage = (double) cpuUsed / (duration.toMillis() * 1000000) * 100;
+
+        //Partie mémoire vive
+        long afterUsedMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
+        long memoryUsed = afterUsedMemory - beforeUsedMemory;
+        double memoryPercentage = (double) memoryUsed / Runtime.getRuntime().maxMemory() * 100;
+
+        //Partie disque physique
+        currentProcess = os.getProcess(os.getProcessId()); // Mettre à jour les informations du processus
+        long bytesReadAfter = currentProcess.getBytesRead();
+        long bytesWrittenAfter = currentProcess.getBytesWritten();
+        long endTimeDisque = System.nanoTime();
+
+        // Calculez la différence d'utilisation du disque
+        long bytesReadDifference = bytesReadAfter - bytesReadBefore;
+        long bytesWrittenDifference = bytesWrittenAfter - bytesWrittenBefore;
+        long elapsedTime = endTimeDisque - startTimeDisque;
+
+        double bytesReadPerSecond = (double) bytesReadDifference / (elapsedTime / 1_000_000_000.0);
+        double bytesWrittenPerSecond = (double) bytesWrittenDifference / (elapsedTime / 1_000_000_000.0);
+
+        System.out.println("Nombre de documents mis à jour : " + updatedDocumentsCount);
+        System.out.println("Durée totale : " + duration.toMillis() + " milisecondes");
+        System.out.println("Utilisation moyenne du processeur : " + cpuPercentage + "%");
+        System.out.println("Pourcentage de la mémoire utilisée : " + memoryPercentage + "%");
+        System.out.println("Taux de lecture : " + bytesReadPerSecond + " octets/s");
+        System.out.println("Taux d'écriture : " + bytesWrittenPerSecond + " octets/s");
+
     }
 
     private static int updateHumanRecursively(Object obj, String newContentValue) {
@@ -149,8 +202,26 @@ public class UPDATEMongoDB {
      * Mais si dans le document il y a plusieurs fois le même champ en paramètre, seulement le premier sera mis à jour.
      */
     public static void updateFieldContent(String nomCollection, String fieldName, Object newValue) {
-        // Enregistre l'heure de début
-        Instant startTime = Instant.now();
+        //------------------------ Initialisation --------------------------------
+        Instant startTime = Instant.now(); // Enregistre l'heure de début
+
+        //Partie processeur
+        ThreadMXBean threadBean = ManagementFactory.getThreadMXBean();
+        long cpuBefore = threadBean.getCurrentThreadCpuTime();
+
+        //Partie mémoire vive
+        long beforeUsedMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
+
+        //Partie disque physique
+        oshi.SystemInfo systemInfo = new oshi.SystemInfo();
+        OperatingSystem os = systemInfo.getOperatingSystem();
+        OSProcess currentProcess = os.getProcess(os.getProcessId());
+
+        long bytesReadBefore = currentProcess.getBytesRead();
+        long bytesWrittenBefore = currentProcess.getBytesWritten();
+        long startTimeDisque = System.nanoTime();
+
+        //------------------------ Début mise à jour ----------------------------
 
         AtomicInteger compteurDocument = new AtomicInteger();
 
@@ -166,13 +237,42 @@ public class UPDATEMongoDB {
             }
         });
 
-        // Enregistre l'heure de fin
-        Instant endTime = Instant.now();
-        // Calcule la durée totale
-        Duration duration = Duration.between(startTime, endTime);
-        System.out.println("Durée totale: " + duration.toMillis() + " ms");
-        System.out.println("Nombre de documents mis à jour: " + compteurDocument.get());
-        System.out.println("Champ mis à jour avec succès");
+        //------------------------ Fin mise à jour ------------------------------
+
+        Instant endTime = Instant.now(); // Enregistre l'heure de fin
+        Duration duration = Duration.between(startTime, endTime); // Calcule la durée totale
+
+
+        //Partie processeur
+        long cpuAfter = threadBean.getCurrentThreadCpuTime();
+        long cpuUsed = cpuAfter - cpuBefore;
+        double cpuPercentage = (double) cpuUsed / (duration.toMillis() * 1000000) * 100;
+
+        //Partie mémoire vive
+        long afterUsedMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
+        long memoryUsed = afterUsedMemory - beforeUsedMemory;
+        double memoryPercentage = (double) memoryUsed / Runtime.getRuntime().maxMemory() * 100;
+
+        //Partie disque physique
+        currentProcess = os.getProcess(os.getProcessId()); // Mettre à jour les informations du processus
+        long bytesReadAfter = currentProcess.getBytesRead();
+        long bytesWrittenAfter = currentProcess.getBytesWritten();
+        long endTimeDisque = System.nanoTime();
+
+        // Calculez la différence d'utilisation du disque
+        long bytesReadDifference = bytesReadAfter - bytesReadBefore;
+        long bytesWrittenDifference = bytesWrittenAfter - bytesWrittenBefore;
+        long elapsedTime = endTimeDisque - startTimeDisque;
+
+        double bytesReadPerSecond = (double) bytesReadDifference / (elapsedTime / 1_000_000_000.0);
+        double bytesWrittenPerSecond = (double) bytesWrittenDifference / (elapsedTime / 1_000_000_000.0);
+
+        System.out.println("Nombre de documents mis à jour : "  + compteurDocument.get());
+        System.out.println("Durée totale : " + duration.toMillis() + " milisecondes");
+        System.out.println("Utilisation moyenne du processeur : " + cpuPercentage + "%");
+        System.out.println("Pourcentage de la mémoire utilisée : " + memoryPercentage + "%");
+        System.out.println("Taux de lecture : " + bytesReadPerSecond + " octets/s");
+        System.out.println("Taux d'écriture : " + bytesWrittenPerSecond + " octets/s");
     }
 
     private static boolean updateNestedField(Document document, String fieldName, Object newValue) {

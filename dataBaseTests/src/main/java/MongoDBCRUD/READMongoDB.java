@@ -19,10 +19,15 @@ import org.bson.json.JsonWriterSettings;
 import org.bson.types.ObjectId;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import oshi.software.os.OSProcess;
+import oshi.software.os.OperatingSystem;
 
 import java.io.IOException;
+import java.lang.management.ManagementFactory;
+import java.lang.management.ThreadMXBean;
 import java.time.Duration;
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -36,8 +41,26 @@ public class READMongoDB {
      * @param collectionName
      */
     public static void readCollection(String collectionName) {
-        //Temps de début
-        Instant startTime = Instant.now();
+        //------------------------ Initialisation --------------------------------
+        Instant startTime = Instant.now(); // Enregistre l'heure de début
+
+        //Partie processeur
+        ThreadMXBean threadBean = ManagementFactory.getThreadMXBean();
+        long cpuBefore = threadBean.getCurrentThreadCpuTime();
+
+        //Partie mémoire vive
+        long beforeUsedMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
+
+        //Partie disque physique
+        oshi.SystemInfo systemInfo = new oshi.SystemInfo();
+        OperatingSystem os = systemInfo.getOperatingSystem();
+        OSProcess currentProcess = os.getProcess(os.getProcessId());
+
+        long bytesReadBefore = currentProcess.getBytesRead();
+        long bytesWrittenBefore = currentProcess.getBytesWritten();
+        long startTimeDisque = System.nanoTime();
+
+        //---------------------------- Lecture -----------------------------------
         MongoIterable<String> collectionsNames = instanceDeConnection.getDatabase().listCollectionNames();
         int nbFichiers = 0;
         //Je vérifie si la collection existe
@@ -50,12 +73,42 @@ public class READMongoDB {
                     nbFichiers++;
                     System.out.println(document);
                 }
-                //Temps de fin
-                Instant endTime = Instant.now();
-                //Calcul du temps d'exécution
-                Duration timeElapsed = Duration.between(startTime, endTime);
-                System.out.println("Temps d'exécution en millisecondes : " + timeElapsed.toMillis());
-                System.out.println("Nombre de fichiers : " + nbFichiers);
+                //--------------------------- Fin de lecture --------------------------
+
+                Instant endTime = Instant.now(); // Enregistre l'heure de fin
+                Duration duration = Duration.between(startTime, endTime); // Calcule la durée totale
+
+
+                //Partie processeur
+                long cpuAfter = threadBean.getCurrentThreadCpuTime();
+                long cpuUsed = cpuAfter - cpuBefore;
+                double cpuPercentage = (double) cpuUsed / (duration.toMillis() * 1000000) * 100;
+
+                //Partie mémoire vive
+                long afterUsedMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
+                long memoryUsed = afterUsedMemory - beforeUsedMemory;
+                double memoryPercentage = (double) memoryUsed / Runtime.getRuntime().maxMemory() * 100;
+
+                //Partie disque physique
+                currentProcess = os.getProcess(os.getProcessId()); // Mettre à jour les informations du processus
+                long bytesReadAfter = currentProcess.getBytesRead();
+                long bytesWrittenAfter = currentProcess.getBytesWritten();
+                long endTimeDisque = System.nanoTime();
+
+                // Calculez la différence d'utilisation du disque
+                long bytesReadDifference = bytesReadAfter - bytesReadBefore;
+                long bytesWrittenDifference = bytesWrittenAfter - bytesWrittenBefore;
+                long elapsedTime = endTimeDisque - startTimeDisque;
+
+                double bytesReadPerSecond = (double) bytesReadDifference / (elapsedTime / 1_000_000_000.0);
+                double bytesWrittenPerSecond = (double) bytesWrittenDifference / (elapsedTime / 1_000_000_000.0);
+
+                System.out.println("Nombre de fichiers lus : " + nbFichiers);
+                System.out.println("Durée totale : " + duration.toMillis() + " milisecondes");
+                System.out.println("Utilisation moyenne du processeur : " + cpuPercentage + "%");
+                System.out.println("Pourcentage de la mémoire utilisée : " + memoryPercentage + "%");
+                System.out.println("Taux de lecture : " + bytesReadPerSecond + " octets/s");
+                System.out.println("Taux d'écriture : " + bytesWrittenPerSecond + " octets/s");
                 return;
             }
         }
@@ -69,11 +122,30 @@ public class READMongoDB {
      * @param collectionName
      */
     public static void getHuman(String collectionName) {
-        // Enregistre l'heure de début
-        Instant startTime = Instant.now();
+        //------------------------ Initialisation --------------------------------
+        Instant startTime = Instant.now(); // Enregistre l'heure de début
+        LocalDateTime now = LocalDateTime.now(); // Récupère l'heure actuelle
+        String date = now.toString().substring(0, 10); // Récupère la date actuelle
 
+        //Partie processeur
+        ThreadMXBean threadBean = ManagementFactory.getThreadMXBean();
+        long cpuBefore = threadBean.getCurrentThreadCpuTime();
+
+        //Partie mémoire vive
+        long beforeUsedMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
+
+        //Partie disque physique
+        oshi.SystemInfo systemInfo = new oshi.SystemInfo();
+        OperatingSystem os = systemInfo.getOperatingSystem();
+        OSProcess currentProcess = os.getProcess(os.getProcessId());
+
+        long bytesReadBefore = currentProcess.getBytesRead();
+        long bytesWrittenBefore = currentProcess.getBytesWritten();
+        long startTimeDisque = System.nanoTime();
         int nbResult = 0;
         MongoCollection<Document> collection = instanceDeConnection.getDatabase().getCollection(collectionName);
+
+        //--------------------------- Début de la recherche --------------------------
 
         // Créez le filtre pour rechercher uniquement les documents où le champ "content" sous "tt:Type" est égal à "Human"
         Bson filter = Filters.eq("metadata.tt:MetadataStream.tt:VideoAnalytics.tt:Frame.tt:Object.tt:Appearance.tt:Class.tt:Type.content", "Human");
@@ -81,19 +153,51 @@ public class READMongoDB {
         // Récupère seulement la colonne "metadata" des documents présents dans la collection qui correspondent au filtre
         FindIterable<Document> documents = collection.find(filter).projection(Projections.include("metadata"));
 
+        //-------------------------  Affichage des résultats -------------------------
+
         for (Document d : documents) {
             Document colonne = (Document) d.get("metadata");
             String jsoncolonne = colonne.toJson();
             //System.out.println(jsoncolonne);
             nbResult++;
         }
-        // Enregistre l'heure de fin
-        Instant endTime = Instant.now();
-        // Calcule la durée totale
-        Duration duration = Duration.between(startTime, endTime);
-        System.out.println("Requête du nombre de documents dans la collection " + collectionName + " dont le type est Human");
-        System.out.println("Durée totale : " + duration.toMillis() + " milisecondes");
+        //--------------------------- Fin de lecture --------------------------
+
+        Instant endTime = Instant.now(); // Enregistre l'heure de fin
+        Duration duration = Duration.between(startTime, endTime); // Calcule la durée totale
+
+
+        //Partie processeur
+        long cpuAfter = threadBean.getCurrentThreadCpuTime();
+        long cpuUsed = cpuAfter - cpuBefore;
+        double cpuPercentage = (double) cpuUsed / (duration.toMillis() * 1000000) * 100;
+
+        //Partie mémoire vive
+        long afterUsedMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
+        long memoryUsed = afterUsedMemory - beforeUsedMemory;
+        double memoryPercentage = (double) memoryUsed / Runtime.getRuntime().maxMemory() * 100;
+
+        //Partie disque physique
+        currentProcess = os.getProcess(os.getProcessId()); // Mettre à jour les informations du processus
+        long bytesReadAfter = currentProcess.getBytesRead();
+        long bytesWrittenAfter = currentProcess.getBytesWritten();
+        long endTimeDisque = System.nanoTime();
+
+        // Calculez la différence d'utilisation du disque
+        long bytesReadDifference = bytesReadAfter - bytesReadBefore;
+        long bytesWrittenDifference = bytesWrittenAfter - bytesWrittenBefore;
+        long elapsedTime = endTimeDisque - startTimeDisque;
+
+        double bytesReadPerSecond = (double) bytesReadDifference / (elapsedTime / 1_000_000_000.0);
+        double bytesWrittenPerSecond = (double) bytesWrittenDifference / (elapsedTime / 1_000_000_000.0);
+
         System.out.println("Nombre de résultats: " + nbResult);
+        System.out.println("Durée totale : " + duration.toMillis() + " milisecondes");
+        System.out.println("Utilisation moyenne du processeur : " + cpuPercentage + "%");
+        System.out.println("Pourcentage de la mémoire utilisée : " + memoryPercentage + "%");
+        System.out.println("Taux de lecture : " + bytesReadPerSecond + " octets/s");
+        System.out.println("Taux d'écriture : " + bytesWrittenPerSecond + " octets/s");
+
     }
 
     /**
@@ -101,10 +205,27 @@ public class READMongoDB {
      * avec une probabilité supérieur à 0.5
      */
     public static void getHumanWithProbability(String collectionName) {
-        // Enregistre l'heure de début
-        Instant startTime = Instant.now();
+        //------------------------ Initialisation --------------------------------
+        Instant startTime = Instant.now(); // Enregistre l'heure de début
+        LocalDateTime now = LocalDateTime.now(); // Récupère l'heure actuelle
+        String date = now.toString().substring(0, 10); // Récupère la date actuelle
+        //Partie processeur
+        ThreadMXBean threadBean = ManagementFactory.getThreadMXBean();
+        long cpuBefore = threadBean.getCurrentThreadCpuTime();
+        //Partie mémoire vive
+        long beforeUsedMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
+        //Partie disque physique
+        oshi.SystemInfo systemInfo = new oshi.SystemInfo();
+        OperatingSystem os = systemInfo.getOperatingSystem();
+        OSProcess currentProcess = os.getProcess(os.getProcessId());
+        long bytesReadBefore = currentProcess.getBytesRead();
+        long bytesWrittenBefore = currentProcess.getBytesWritten();
+        long startTimeDisque = System.nanoTime();
         int nbResult = 0;
         MongoCollection<Document> collection = instanceDeConnection.getDatabase().getCollection(collectionName);
+
+        //--------------------------- Début de la recherche --------------------------
+
 
         // Créez le filtre pour rechercher uniquement les documents où le champ "content" sous "tt:Type" est égal à "Human"
         Bson humanFilter = Filters.eq("metadata.tt:MetadataStream.tt:VideoAnalytics.tt:Frame.tt:Object.tt:Appearance.tt:Class.tt:Type.content", "Human");
@@ -139,7 +260,6 @@ public class READMongoDB {
     public static void getDocumentsWithDate(String nomCollection, String date) {
 
     }
-
 
     //En bas ce sont des méthodes auxiliaires
     //------------------------------------------------------------------------------------------------------------------

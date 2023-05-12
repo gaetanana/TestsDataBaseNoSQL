@@ -1,0 +1,11 @@
+RedisCRUD\UPDATERedis.class
+ConnectionBD\ConnectionMongoDB.class
+RedisCRUD\CREATERedis.class
+Applications\mainRedis.class
+MongoDBCRUD\UPDATEMongoDB.class
+MongoDBCRUD\DELETEMongoDB.class
+RedisCRUD\DELETERedis.class
+TestsPersonnels\generateurDeFichierXML.class
+ConnectionBD\ConnectionElasticSearch.class
+RedisCRUD\READRedis.class
+MongoDBCRUD\CREATEMongoDB.class

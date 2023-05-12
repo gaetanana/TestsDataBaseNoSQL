@@ -194,7 +194,6 @@ public class CREATEMongoDB {
 
                 System.out.println("Documents créés avec succès");
 
-
             }
         } catch (Exception e) {
             System.out.println("Error creating document: " + e.getMessage());

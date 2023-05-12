@@ -4,11 +4,15 @@ import ConnectionBD.ConnectionRedis;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.XML;
+import oshi.software.os.OSProcess;
+import oshi.software.os.OperatingSystem;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.Pipeline;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.management.ManagementFactory;
+import java.lang.management.ThreadMXBean;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
@@ -72,7 +76,26 @@ public class UPDATERedis {
      * la valeur en paramètre.
      */
     public static void updateAllKeyJSONWithValueHuman(String newValue) {
-        Instant start = Instant.now();
+        //--------------------- Initialisation ---------------------
+        Instant startTime = Instant.now(); // Enregistre l'heure de début
+
+        //Partie processeur
+        ThreadMXBean threadBean = ManagementFactory.getThreadMXBean();
+        long cpuBefore = threadBean.getCurrentThreadCpuTime();
+
+        //Partie mémoire vive
+        long beforeUsedMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
+
+        //Partie disque physique
+        oshi.SystemInfo systemInfo = new oshi.SystemInfo();
+        OperatingSystem os = systemInfo.getOperatingSystem();
+        OSProcess currentProcess = os.getProcess(os.getProcessId());
+
+
+        long bytesReadBefore = currentProcess.getBytesRead();
+        long bytesWrittenBefore = currentProcess.getBytesWritten();
+        long startTimeDisque = System.nanoTime();
+
         int keysModified = 0;
         int valuesModified = 0;
 
@@ -95,10 +118,41 @@ public class UPDATERedis {
             }
         }
 
-        Instant end = Instant.now();
-        System.out.println("Temps d'exécution : " + Duration.between(start, end).toMillis() + " ms");
-        System.out.println("Nombre de clés modifiées : " + keysModified);
-        System.out.println("Nombre de valeurs modifiées : " + valuesModified);
+        //--------------------- Fin lecture ---------------------
+        Instant endTime = Instant.now(); // Enregistre l'heure de fin
+        Duration duration = Duration.between(startTime, endTime); // Calcule la durée totale
+
+        //Partie processeur
+        long cpuAfter = threadBean.getCurrentThreadCpuTime();
+        long cpuUsed = cpuAfter - cpuBefore;
+        double cpuPercentage = (double) cpuUsed / (duration.toMillis() * 1000000) * 100;
+
+        //Partie mémoire vive
+        long afterUsedMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
+        long memoryUsed = afterUsedMemory - beforeUsedMemory;
+        double memoryPercentage = (double) memoryUsed / Runtime.getRuntime().maxMemory() * 100;
+
+        //Partie disque physique
+        currentProcess = os.getProcess(os.getProcessId()); // Mettre à jour les informations du processus
+        long bytesReadAfter = currentProcess.getBytesRead();
+        long bytesWrittenAfter = currentProcess.getBytesWritten();
+        long endTimeDisque = System.nanoTime();
+
+        // Calculez la différence d'utilisation du disque
+        long bytesReadDifference = bytesReadAfter - bytesReadBefore;
+        long bytesWrittenDifference = bytesWrittenAfter - bytesWrittenBefore;
+        long elapsedTime = endTimeDisque - startTimeDisque;
+
+        double bytesReadPerSecond = (double) bytesReadDifference / (elapsedTime / 1_000_000_000.0);
+        double bytesWrittenPerSecond = (double) bytesWrittenDifference / (elapsedTime / 1_000_000_000.0);
+
+        System.out.println("Nombre de clés lues : " + keysModified);
+        System.out.println("Durée totale : " + duration.toMillis() + " milisecondes");
+        System.out.println("Utilisation moyenne du processeur : " + cpuPercentage + "%");
+        System.out.println("Pourcentage de la mémoire utilisée : " + memoryPercentage + "%");
+        System.out.println("Taux de lecture : " + bytesReadPerSecond + " octets/s");
+        System.out.println("Taux d'écriture : " + bytesWrittenPerSecond + " octets/s");
+
         // Ferme la connexion à Redis
         redisConnection.closeConnection(redisConnection.getConnection());
     }
@@ -135,9 +189,30 @@ public class UPDATERedis {
 
 
     public static void updateAllKeyJSONWithValue(String newValue) {
-        Instant start = Instant.now();
+        //--------------------- Initialisation ---------------------
+        Instant startTime = Instant.now(); // Enregistre l'heure de début
+
+        //Partie processeur
+        ThreadMXBean threadBean = ManagementFactory.getThreadMXBean();
+        long cpuBefore = threadBean.getCurrentThreadCpuTime();
+
+        //Partie mémoire vive
+        long beforeUsedMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
+
+        //Partie disque physique
+        oshi.SystemInfo systemInfo = new oshi.SystemInfo();
+        OperatingSystem os = systemInfo.getOperatingSystem();
+        OSProcess currentProcess = os.getProcess(os.getProcessId());
+
+
+        long bytesReadBefore = currentProcess.getBytesRead();
+        long bytesWrittenBefore = currentProcess.getBytesWritten();
+        long startTimeDisque = System.nanoTime();
         int keysModified = 0;
         int valuesModified = 0;
+
+        //-------------------- Mise à jour --------------------
+
         System.out.println("Traitement en cours...");
 
         ConnectionRedis redisConnection = ConnectionRedis.getInstance();
@@ -158,10 +233,45 @@ public class UPDATERedis {
             }
         }
 
-        Instant end = Instant.now();
-        System.out.println("Temps d'exécution : " + Duration.between(start, end).toMillis() + " ms");
-        System.out.println("Nombre de clés modifiées : " + keysModified);
-        System.out.println("Nombre de valeurs modifiées : " + valuesModified);
+        //--------------------- Fin mise à jour ---------------------
+
+        //--------------------- Fin lecture ---------------------
+        Instant endTime = Instant.now(); // Enregistre l'heure de fin
+        Duration duration = Duration.between(startTime, endTime); // Calcule la durée totale
+
+        //Partie processeur
+        long cpuAfter = threadBean.getCurrentThreadCpuTime();
+        long cpuUsed = cpuAfter - cpuBefore;
+        double cpuPercentage = (double) cpuUsed / (duration.toMillis() * 1000000) * 100;
+
+        //Partie mémoire vive
+        long afterUsedMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
+        long memoryUsed = afterUsedMemory - beforeUsedMemory;
+        double memoryPercentage = (double) memoryUsed / Runtime.getRuntime().maxMemory() * 100;
+
+        //Partie disque physique
+        currentProcess = os.getProcess(os.getProcessId()); // Mettre à jour les informations du processus
+        long bytesReadAfter = currentProcess.getBytesRead();
+        long bytesWrittenAfter = currentProcess.getBytesWritten();
+        long endTimeDisque = System.nanoTime();
+
+        // Calculez la différence d'utilisation du disque
+        long bytesReadDifference = bytesReadAfter - bytesReadBefore;
+        long bytesWrittenDifference = bytesWrittenAfter - bytesWrittenBefore;
+        long elapsedTime = endTimeDisque - startTimeDisque;
+
+        double bytesReadPerSecond = (double) bytesReadDifference / (elapsedTime / 1_000_000_000.0);
+        double bytesWrittenPerSecond = (double) bytesWrittenDifference / (elapsedTime / 1_000_000_000.0);
+
+        System.out.println("Nombre de clés lues : " + keysModified);
+        System.out.println("Durée totale : " + duration.toMillis() + " milisecondes");
+        System.out.println("Utilisation moyenne du processeur : " + cpuPercentage + "%");
+        System.out.println("Pourcentage de la mémoire utilisée : " + memoryPercentage + "%");
+        System.out.println("Taux de lecture : " + bytesReadPerSecond + " octets/s");
+        System.out.println("Taux d'écriture : " + bytesWrittenPerSecond + " octets/s");
+
+        // Ferme la connexion à Redis
+        redisConnection.closeConnection(redisConnection.getConnection());
     }
 
 

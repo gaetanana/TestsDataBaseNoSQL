@@ -37,7 +37,6 @@ public class READMongoDB {
 
     /**
      * Cette méthode permet de lire tous les documents dans une collection.
-     *
      * @param collectionName
      */
     public static void readCollection(String collectionName) {
@@ -117,8 +116,7 @@ public class READMongoDB {
 
 
     /**
-     * Cette fonction permet de trouver combien il y a de documents dans lequelle la valeur de la clé "content" sous "tt:Type" est égal à "Human"
-     *
+     * Cette fonction permet de trouver combien il y a de documents dans lequel la valeur de la clé "content" sous "tt:Type" est égal à "Human"
      * @param collectionName
      */
     public static void getHuman(String collectionName) {

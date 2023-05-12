@@ -68,7 +68,4 @@ public class ConnectionMongoDB {
             instance.mongoClient.close();
         }
     }
-
-
-
 }

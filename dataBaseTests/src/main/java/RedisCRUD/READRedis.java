@@ -225,7 +225,7 @@ public class READRedis {
      * Cette fonction permet de retrouver toutes les clés dans Redis qui contiennent un objet de type "Human"
      * et un Likelihood supérieur à 0.5
      */
-    public static void getHumanWithProbability() {
+    public static void readAllKeyWithHumanProbability() {
         //--------------------- Initialisation ---------------------
 
         Instant startTime = Instant.now(); // Enregistre l'heure de début

@@ -7,7 +7,6 @@ import RedisCRUD.READRedis;
 import RedisCRUD.UPDATERedis;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Scanner;
 
 public class mainRedis {
@@ -142,7 +141,7 @@ public class mainRedis {
                 System.out.println("|| 2 - Lire toutes les clés présentes dans la base de données        ||");
                 System.out.println("|| 3 - Lire toutes les clés qui a dans les valeurs un humain         ||");
                 System.out.println("|| 4 - Lire toutes les clés qui a dans les valeurs un humain avec    ||");
-                System.out.println("||     une probabilité de survie supérieure à 0.5                    ||");
+                System.out.println("||     une probabilité de supérieure à 0.5                           ||");
                 System.out.println("|| 5 - Quitter le menu Read                                          ||");
                 System.out.println("||                                                                   ||");
                 System.out.println("=======================================================================");
@@ -189,7 +188,7 @@ public class mainRedis {
                     System.out.println("|| Vous avez choisi de lire toutes les clés qui a dans les valeurs   ||");
                     System.out.println("|| un humain avec une probabilité de survie supérieure à 0.5         ||");
                     System.out.println("=======================================================================");
-                    READRedis.getHumanWithProbability();
+                    READRedis.readAllKeyWithHumanProbability();
                 } else if (choixRead == 5) {
                     System.out.println("=======================================================================");
                     System.out.println("||       Vous avez choisi de quitter le menu Read                    ||");

@@ -24,7 +24,7 @@ Ce fichier se trouve dans le dossier **/TestsDataBaseNoSQL/DataBaseCompose/docke
 
 Pour le lancer il faut ouvrir un terminal dans le dossier **/TestsDataBaseNoSQL/DataBaseCompose** et lancer la commande suivante :
 
-```bash docker-compose up```
+```docker-compose up```
 
 ## Application
 

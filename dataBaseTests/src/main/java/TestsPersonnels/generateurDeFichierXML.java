@@ -23,7 +23,7 @@ public class generateurDeFichierXML {
 
         String sourceFilePath = "C:\\Users\\g.gonfiantini\\Desktop\\data\\FichiersXML\\Onvif_Metadata_C1000_2023-04-21_16-49-19.073.xml"; // Modifier avec le chemin absolu du fichier XML source
         String destinationFolderPath = "C:\\Users\\g.gonfiantini\\Desktop\\data\\FichiersXML\\FichieXML2m"; // Modifier avec le chemin absolu du dossier de destination
-        int numberOfCopies = 2000000; // Modifier avec le nombre de copies souhaité
+        int numberOfCopies = 2000502; // Modifier avec le nombre de copies souhaité
 
         File sourceFile = new File(sourceFilePath);
         File destinationFolder = new File(destinationFolderPath);
@@ -38,8 +38,10 @@ public class generateurDeFichierXML {
             return;
         }
 
+        int compteur = 2000000;
         for (int i = 1; i <= numberOfCopies; i++) {
-            File destinationFile = new File(destinationFolder, "copy_" + i + "_" + sourceFile.getName());
+            int tampon = compteur + i;
+            File destinationFile = new File(destinationFolder, "copy_" + tampon + "_" + sourceFile.getName());
             try {
                 copyFileUsingFileChannels(sourceFile, destinationFile);
                 System.out.println("File " + destinationFile.getAbsolutePath() + " created successfully.");

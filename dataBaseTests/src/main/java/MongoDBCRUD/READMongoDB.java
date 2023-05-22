@@ -114,7 +114,6 @@ public class READMongoDB {
         System.err.println("Collection " + collectionName + " n'existe pas");
     }
 
-
     /**
      * Cette fonction permet de trouver combien il y a de documents dans lequel la valeur de la clé "content" sous "tt:Type" est égal à "Human"
      * @param collectionName
@@ -314,6 +313,12 @@ public class READMongoDB {
         return false;
     }
 
+    /**
+     * Cette fonction permet de savoir si un champ existe dans un document JSON
+     * @param document
+     * @param field
+     * @return
+     */
     private static boolean fieldExistsInDocument(Document document, String field) {
         for (String key : document.keySet()) {
             if (key.equals(field)) {

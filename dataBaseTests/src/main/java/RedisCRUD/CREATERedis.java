@@ -97,7 +97,7 @@ public class CREATERedis {
                 //Thread.sleep(50); // 50 ms de pause
                 executorService.submit(() -> {
                     try (Jedis jedis = redisConnection.getConnection()) {
-                        String content = new String(Files.readAllBytes(Paths.get(file.getPath())));
+                            String content = new String(Files.readAllBytes(Paths.get(file.getPath())));
                         JSONObject jsonObject = XML.toJSONObject(content);
                         String key = file.getName().substring(0, file.getName().length() - 4);
                         jedis.set(key, jsonObject.toString());
@@ -146,7 +146,8 @@ public class CREATERedis {
         double bytesWrittenPerSecond = (double) bytesWrittenDifference / (elapsedTime / 1_000_000_000.0);
 
         System.out.println("Nombre de clés créées : " + compteurFichier);
-        System.out.println("Durée totale : " + duration.toMillis() + " milisecondes");
+        System.out.println("Durée totale : " + duration.toSeconds() + " secondes");
+        System.out.println("Durée totale : " + duration.toMillis() + " millisecondes");
         System.out.println("Utilisation moyenne du processeur : " + cpuPercentage + "%");
         System.out.println("Pourcentage de la mémoire utilisée : " + memoryPercentage + "%");
         System.out.println("Taux de lecture : " + bytesReadPerSecond + " octets/s");

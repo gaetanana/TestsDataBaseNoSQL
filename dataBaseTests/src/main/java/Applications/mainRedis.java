@@ -27,7 +27,6 @@ public class mainRedis {
 
         while (true) {
 
-
             System.out.println("\n========================================================");
             System.out.println("|| Programme de test de la base de données Redis      ||");
             System.out.println("========================================================\n");

@@ -32,7 +32,7 @@ Les fichiers .jar sont dans le dossier **/TestsDataBaseNoSQL/ApplicationsJar**.
 
 Pour les lancer il faut ouvrir un terminal dans le dossier **/TestsDataBaseNoSQL/ApplicationsJar** et lancer la commande suivante :
 
-```bash java -jar nomDuFichier.jar```
+```java -jar nomDuFichier.jar```
 
 --------------------
 

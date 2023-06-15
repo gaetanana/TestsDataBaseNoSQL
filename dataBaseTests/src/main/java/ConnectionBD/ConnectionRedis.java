@@ -53,8 +53,6 @@ public class ConnectionRedis {
         }
     }
 
-
-
     public static boolean isDockerRunning() {
         try {
             Process process = Runtime.getRuntime().exec("docker ps");

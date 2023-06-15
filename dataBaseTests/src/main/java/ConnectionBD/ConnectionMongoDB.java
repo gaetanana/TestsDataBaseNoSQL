@@ -22,6 +22,7 @@ public class ConnectionMongoDB {
 
     private ConnectionMongoDB() {
         try {
+
             ConnectionString connectionString = new ConnectionString("mongodb://root:examplepassword@localhost:27017/actiaDataBase?retryWrites=true&w=majority&authSource=admin");
             mongoClient = MongoClients.create(connectionString);
             mongoDatabase = mongoClient.getDatabase("actiaDataBase");

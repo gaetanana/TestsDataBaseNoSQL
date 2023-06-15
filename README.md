@@ -46,23 +46,33 @@ Pour les lancer il faut ouvrir un terminal dans le dossier **/TestsDataBaseNoSQL
 
 ![imgConsole1.png](imgREADME%2FimgConsole1.png)
 
-**Étape 2** : Lancez le fichier docker-compose.yml pour lancer les bases de données.
+**Étape 2** : Lancez le fichier `docker-compose.yml` pour lancer les bases de données.
 
 ![Conteneurs.png](imgREADME%2FConteneurs.png)
 
 **Étape 3** : Vérification des bases de données lancées.
 
-
+![DockerDesktop.png](imgREADME%2FDockerDesktop.png)
 
 ### Lancez les applications
 
 L'application MongoDB effectue les opérations sur la base de données **'actiaDataBase'** donc si vous
-n'avez pas cette base de données vous devez la créer ou vous pouvez modifier la base de données dans la classe 
+n'avez pas cette base de données elle sera créée automatiquement.
+
 `ConnectionMongoDB`.
 
 **Étape 1** : Lancez une console dans le dossier **/TestsDataBaseNoSQL/ApplicationsJar**.
 
+![consoleCheminJAR.png](imgREADME%2FconsoleCheminJAR.png)
+
 **Étape 2** : Lancez les fichiers .jar avec la commande suivante :
 
-```bash java -jar nomDuFichier.jar```
+```java -jar nomDuFichier.jar```
 
+Lancement application MongoDB :
+
+![lancementJARMongoDB.PNG](imgREADME%2FlancementJARMongoDB.PNG)
+
+Lancement application Redis : 
+
+![consoleApplicationRedis.png](imgREADME%2FconsoleApplicationRedis.png)
